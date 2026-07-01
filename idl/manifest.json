@@ -1,0 +1,12 @@
+{
+  "repository": "bam-gen-idl",
+  "defaultBranch": "master",
+  "services": [
+    {
+      "name": "AuthService",
+      "idl": "idl/auth.thrift",
+      "owner": "frontend-platform",
+      "description": "认证中心 HTTP API IDL"
+    }
+  ]
+}
