@@ -22,17 +22,50 @@ jobs:
             exit 1
           fi
 
-          echo "Notifying PAM platform to sync all IDL branches..."
+          echo "Triggering PAM platform to sync all IDL branches..."
           HTTP_CODE=$(curl -sS -o /tmp/pam-sync-resp.json -w "%{http_code}" \
             -X POST "$PAM_PLATFORM_URL/api/idl/git-sync" \
             -H "Content-Type: application/json" \
             -H "Authorization: Bearer $PAM_SYNC_TOKEN")
 
-          echo "Response ($HTTP_CODE):"
+          echo "Trigger response ($HTTP_CODE):"
           cat /tmp/pam-sync-resp.json
           echo ""
 
-          if [ "$HTTP_CODE" != "200" ]; then
-            echo "PAM sync failed with HTTP $HTTP_CODE"
+          # The platform runs the sync in the background and returns 202 Accepted.
+          if [ "$HTTP_CODE" != "202" ] && [ "$HTTP_CODE" != "200" ]; then
+            echo "PAM sync trigger failed with HTTP $HTTP_CODE"
             exit 1
           fi
+
+      - name: Wait for sync result
+        env:
+          PAM_PLATFORM_URL: ${{ secrets.PAM_PLATFORM_URL }}
+          PAM_SYNC_TOKEN: ${{ secrets.PAM_SYNC_TOKEN }}
+        run: |
+          echo "Polling sync status..."
+          for i in $(seq 1 60); do
+            sleep 5
+            curl -sS -o /tmp/pam-status.json \
+              -H "Authorization: Bearer $PAM_SYNC_TOKEN" \
+              "$PAM_PLATFORM_URL/api/idl/git-sync/status" || continue
+
+            RUNNING=$(node -e "try{console.log(JSON.parse(require('fs').readFileSync('/tmp/pam-status.json','utf8')).running)}catch(e){console.log('unknown')}")
+            echo "attempt $i: running=$RUNNING"
+
+            if [ "$RUNNING" = "false" ]; then
+              echo "Final status:"
+              cat /tmp/pam-status.json
+              echo ""
+              LAST_ERROR=$(node -e "try{console.log(JSON.parse(require('fs').readFileSync('/tmp/pam-status.json','utf8')).lastError||'')}catch(e){console.log('')}")
+              if [ -n "$LAST_ERROR" ]; then
+                echo "PAM sync failed: $LAST_ERROR"
+                exit 1
+              fi
+              echo "PAM sync completed successfully."
+              exit 0
+            fi
+          done
+
+          echo "Timed out waiting for PAM sync to finish (sync may still be running)."
+          exit 1
