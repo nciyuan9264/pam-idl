@@ -13,6 +13,12 @@
       "idl": "idl/ocr_backend.thrift",
       "owner": "ai-platform",
       "description": "OCR Backend 火山方舟 HTTP API IDL"
+    },
+    {
+      "name": "ReaderService",
+      "idl": "idl/reader.thrift",
+      "owner": "frontend-platform",
+      "description": "阅读器图书管理 HTTP API IDL"
     }
   ]
 }
