@@ -1,0 +1,38 @@
+name: Sync IDL to PAM Platform
+
+on:
+  push:
+    branches:
+      - '**'
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+jobs:
+  notify-pam:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger PAM platform git-sync
+        env:
+          PAM_PLATFORM_URL: ${{ secrets.PAM_PLATFORM_URL }}
+          PAM_SYNC_TOKEN: ${{ secrets.PAM_SYNC_TOKEN }}
+        run: |
+          if [ -z "$PAM_PLATFORM_URL" ]; then
+            echo "PAM_PLATFORM_URL secret is not set"
+            exit 1
+          fi
+
+          echo "Notifying PAM platform to sync all IDL branches..."
+          HTTP_CODE=$(curl -sS -o /tmp/pam-sync-resp.json -w "%{http_code}" \
+            -X POST "$PAM_PLATFORM_URL/api/idl/git-sync" \
+            -H "Content-Type: application/json" \
+            -H "Authorization: Bearer $PAM_SYNC_TOKEN")
+
+          echo "Response ($HTTP_CODE):"
+          cat /tmp/pam-sync-resp.json
+          echo ""
+
+          if [ "$HTTP_CODE" != "200" ]; then
+            echo "PAM sync failed with HTTP $HTTP_CODE"
+            exit 1
+          fi
