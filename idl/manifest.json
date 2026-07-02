@@ -1,5 +1,5 @@
 {
-  "repository": "bam-gen-idl",
+  "repository": "pam-idl",
   "defaultBranch": "master",
   "services": [
     {
@@ -7,6 +7,12 @@
       "idl": "idl/auth.thrift",
       "owner": "frontend-platform",
       "description": "认证中心 HTTP API IDL"
+    },
+    {
+      "name": "OCRBackendService",
+      "idl": "idl/ocr_backend.thrift",
+      "owner": "ai-platform",
+      "description": "OCR Backend 火山方舟 HTTP API IDL"
     }
   ]
 }
