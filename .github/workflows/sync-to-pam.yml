@@ -14,11 +14,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Install ossutil
+      - name: Setup ossutil
         run: |
-          curl -fsSL "https://gosspublic.alicdn.com/ossutil/1.7.19/ossutil64" -o /tmp/ossutil64
-          chmod +x /tmp/ossutil64
-          sudo mv /tmp/ossutil64 /usr/local/bin/ossutil64
+          wget -q http://gosspublic.alicdn.com/ossutil/1.7.15/ossutil64
+          chmod +x ossutil64
+          sudo mv ossutil64 /usr/local/bin/ossutil
 
       - name: Upload IDL to OSS
         env:
@@ -34,7 +34,10 @@ jobs:
             exit 1
           fi
 
-          ossutil64 config -e "$OSS_ENDPOINT" -i "$OSS_ACCESS_KEY_ID" -k "$OSS_ACCESS_KEY_SECRET" -L CH
+          ossutil config \
+            -e "$OSS_ENDPOINT" \
+            -i "$OSS_ACCESS_KEY_ID" \
+            -k "$OSS_ACCESS_KEY_SECRET"
 
           BRANCH=$(node -e "console.log(encodeURIComponent(process.env.GITHUB_REF_NAME))")
           DEST="oss://${OSS_BUCKET}/${OSS_PREFIX}/${PAM_IDL_OSS_REPO_NAME}/${BRANCH}"
@@ -50,8 +53,8 @@ jobs:
           NODE
 
           echo "Uploading IDL to $DEST ..."
-          ossutil64 sync ./ "$DEST/" --include "idl/*.thrift" --delete -f
-          ossutil64 cp /tmp/pam-idl-meta.json "$DEST/_meta.json" -f
+          ossutil sync ./ "$DEST/" --include "idl/*.thrift" --delete -f
+          ossutil cp /tmp/pam-idl-meta.json "$DEST/_meta.json" -f
 
       - name: Trigger PAM platform OSS sync
         env:
@@ -87,11 +90,11 @@ jobs:
     if: github.event_name == 'delete' && github.event.ref_type == 'branch'
     runs-on: ubuntu-latest
     steps:
-      - name: Install ossutil
+      - name: Setup ossutil
         run: |
-          curl -fsSL "https://gosspublic.alicdn.com/ossutil/1.7.19/ossutil64" -o /tmp/ossutil64
-          chmod +x /tmp/ossutil64
-          sudo mv /tmp/ossutil64 /usr/local/bin/ossutil64
+          wget -q http://gosspublic.alicdn.com/ossutil/1.7.15/ossutil64
+          chmod +x ossutil64
+          sudo mv ossutil64 /usr/local/bin/ossutil
 
       - name: Delete IDL branch from OSS
         env:
@@ -108,12 +111,15 @@ jobs:
             exit 1
           fi
 
-          ossutil64 config -e "$OSS_ENDPOINT" -i "$OSS_ACCESS_KEY_ID" -k "$OSS_ACCESS_KEY_SECRET" -L CH
+          ossutil config \
+            -e "$OSS_ENDPOINT" \
+            -i "$OSS_ACCESS_KEY_ID" \
+            -k "$OSS_ACCESS_KEY_SECRET"
 
           BRANCH=$(node -e "console.log(encodeURIComponent(process.env.RAW_BRANCH))")
           DEST="oss://${OSS_BUCKET}/${OSS_PREFIX}/${PAM_IDL_OSS_REPO_NAME}/${BRANCH}/"
           echo "Deleting IDL branch from $DEST ..."
-          ossutil64 rm "$DEST" -r -f || true
+          ossutil rm "$DEST" -r -f || true
 
       - name: Trigger PAM platform OSS sync
         env:
