@@ -53,7 +53,7 @@ jobs:
           NODE
 
           echo "Uploading IDL to $DEST ..."
-          ossutil sync ./ "$DEST/" --include "idl/*.thrift" --delete -f
+          ossutil sync ./idl/ "$DEST/idl/" --include "*.thrift" --delete -f
           ossutil cp /tmp/pam-idl-meta.json "$DEST/_meta.json" -f
 
       - name: Trigger PAM platform OSS sync
