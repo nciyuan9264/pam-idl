@@ -68,7 +68,7 @@ jobs:
 
           echo "Triggering PAM platform to sync all IDL branches..."
           HTTP_CODE=$(curl -sS -o /tmp/pam-sync-resp.json -w "%{http_code}" \
-            -X POST "$PAM_PLATFORM_URL/api/idl/git-sync" \
+            -X POST "$PAM_PLATFORM_URL/api/idl/oss-sync" \
             -H "Content-Type: application/json" \
             -H "Authorization: Bearer $PAM_SYNC_TOKEN")
 
@@ -133,7 +133,7 @@ jobs:
 
           echo "Triggering PAM platform after branch deletion..."
           HTTP_CODE=$(curl -sS -o /tmp/pam-sync-resp.json -w "%{http_code}" \
-            -X POST "$PAM_PLATFORM_URL/api/idl/git-sync" \
+            -X POST "$PAM_PLATFORM_URL/api/idl/oss-sync" \
             -H "Content-Type: application/json" \
             -H "Authorization: Bearer $PAM_SYNC_TOKEN")
 
