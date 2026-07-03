@@ -4,15 +4,56 @@ on:
   push:
     branches:
       - '**'
-    tags:
-      - 'v*'
+  delete:
   workflow_dispatch:
 
 jobs:
   notify-pam:
+    if: github.event_name != 'delete'
     runs-on: ubuntu-latest
     steps:
-      - name: Trigger PAM platform git-sync
+      - uses: actions/checkout@v4
+
+      - name: Install ossutil
+        run: |
+          curl -fsSL "https://gosspublic.alicdn.com/ossutil/1.7.19/ossutil64" -o /tmp/ossutil64
+          chmod +x /tmp/ossutil64
+          sudo mv /tmp/ossutil64 /usr/local/bin/ossutil64
+
+      - name: Upload IDL to OSS
+        env:
+          OSS_ACCESS_KEY_ID: ${{ secrets.OSS_ACCESS_KEY_ID }}
+          OSS_ACCESS_KEY_SECRET: ${{ secrets.OSS_ACCESS_KEY_SECRET }}
+          OSS_ENDPOINT: ${{ secrets.OSS_ENDPOINT }}
+          OSS_BUCKET: ${{ secrets.OSS_BUCKET }}
+          OSS_PREFIX: ${{ vars.OSS_PREFIX || 'idl' }}
+          PAM_IDL_OSS_REPO_NAME: ${{ vars.PAM_IDL_OSS_REPO_NAME || 'pam-idl' }}
+        run: |
+          if [ -z "$OSS_ACCESS_KEY_ID" ] || [ -z "$OSS_ACCESS_KEY_SECRET" ] || [ -z "$OSS_ENDPOINT" ] || [ -z "$OSS_BUCKET" ]; then
+            echo "OSS credentials, endpoint or bucket secret is not set"
+            exit 1
+          fi
+
+          ossutil64 config -e "$OSS_ENDPOINT" -i "$OSS_ACCESS_KEY_ID" -k "$OSS_ACCESS_KEY_SECRET" -L CH
+
+          BRANCH=$(node -e "console.log(encodeURIComponent(process.env.GITHUB_REF_NAME))")
+          DEST="oss://${OSS_BUCKET}/${OSS_PREFIX}/${PAM_IDL_OSS_REPO_NAME}/${BRANCH}"
+
+          node <<'NODE'
+          const fs = require('fs');
+          const payload = {
+            commit: process.env.GITHUB_SHA,
+            branch: process.env.GITHUB_REF_NAME,
+            generatedAt: new Date().toISOString(),
+          };
+          fs.writeFileSync('/tmp/pam-idl-meta.json', JSON.stringify(payload));
+          NODE
+
+          echo "Uploading IDL to $DEST ..."
+          ossutil64 sync ./ "$DEST/" --include "idl/*.thrift" --delete -f
+          ossutil64 cp /tmp/pam-idl-meta.json "$DEST/_meta.json" -f
+
+      - name: Trigger PAM platform OSS sync
         env:
           PAM_PLATFORM_URL: ${{ secrets.PAM_PLATFORM_URL }}
           PAM_SYNC_TOKEN: ${{ secrets.PAM_SYNC_TOKEN }}
@@ -33,39 +74,70 @@ jobs:
           echo ""
 
           # The platform runs the sync in the background and returns 202 Accepted.
+          # We only need to confirm the trigger was accepted; the actual sync
+          # runs asynchronously on the platform and is not awaited here.
           if [ "$HTTP_CODE" != "202" ] && [ "$HTTP_CODE" != "200" ]; then
             echo "PAM sync trigger failed with HTTP $HTTP_CODE"
             exit 1
           fi
 
-      - name: Wait for sync result
+          echo "PAM sync triggered successfully (running asynchronously on the platform)."
+
+  cleanup-deleted-branch:
+    if: github.event_name == 'delete' && github.event.ref_type == 'branch'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install ossutil
+        run: |
+          curl -fsSL "https://gosspublic.alicdn.com/ossutil/1.7.19/ossutil64" -o /tmp/ossutil64
+          chmod +x /tmp/ossutil64
+          sudo mv /tmp/ossutil64 /usr/local/bin/ossutil64
+
+      - name: Delete IDL branch from OSS
+        env:
+          OSS_ACCESS_KEY_ID: ${{ secrets.OSS_ACCESS_KEY_ID }}
+          OSS_ACCESS_KEY_SECRET: ${{ secrets.OSS_ACCESS_KEY_SECRET }}
+          OSS_ENDPOINT: ${{ secrets.OSS_ENDPOINT }}
+          OSS_BUCKET: ${{ secrets.OSS_BUCKET }}
+          OSS_PREFIX: ${{ vars.OSS_PREFIX || 'idl' }}
+          PAM_IDL_OSS_REPO_NAME: ${{ vars.PAM_IDL_OSS_REPO_NAME || 'pam-idl' }}
+          RAW_BRANCH: ${{ github.event.ref }}
+        run: |
+          if [ -z "$OSS_ACCESS_KEY_ID" ] || [ -z "$OSS_ACCESS_KEY_SECRET" ] || [ -z "$OSS_ENDPOINT" ] || [ -z "$OSS_BUCKET" ]; then
+            echo "OSS credentials, endpoint or bucket secret is not set"
+            exit 1
+          fi
+
+          ossutil64 config -e "$OSS_ENDPOINT" -i "$OSS_ACCESS_KEY_ID" -k "$OSS_ACCESS_KEY_SECRET" -L CH
+
+          BRANCH=$(node -e "console.log(encodeURIComponent(process.env.RAW_BRANCH))")
+          DEST="oss://${OSS_BUCKET}/${OSS_PREFIX}/${PAM_IDL_OSS_REPO_NAME}/${BRANCH}/"
+          echo "Deleting IDL branch from $DEST ..."
+          ossutil64 rm "$DEST" -r -f || true
+
+      - name: Trigger PAM platform OSS sync
         env:
           PAM_PLATFORM_URL: ${{ secrets.PAM_PLATFORM_URL }}
           PAM_SYNC_TOKEN: ${{ secrets.PAM_SYNC_TOKEN }}
         run: |
-          echo "Polling sync status..."
-          for i in $(seq 1 60); do
-            sleep 5
-            curl -sS -o /tmp/pam-status.json \
-              -H "Authorization: Bearer $PAM_SYNC_TOKEN" \
-              "$PAM_PLATFORM_URL/api/idl/git-sync/status" || continue
+          if [ -z "$PAM_PLATFORM_URL" ]; then
+            echo "PAM_PLATFORM_URL secret is not set"
+            exit 1
+          fi
 
-            RUNNING=$(node -e "try{console.log(JSON.parse(require('fs').readFileSync('/tmp/pam-status.json','utf8')).running)}catch(e){console.log('unknown')}")
-            echo "attempt $i: running=$RUNNING"
+          echo "Triggering PAM platform after branch deletion..."
+          HTTP_CODE=$(curl -sS -o /tmp/pam-sync-resp.json -w "%{http_code}" \
+            -X POST "$PAM_PLATFORM_URL/api/idl/git-sync" \
+            -H "Content-Type: application/json" \
+            -H "Authorization: Bearer $PAM_SYNC_TOKEN")
 
-            if [ "$RUNNING" = "false" ]; then
-              echo "Final status:"
-              cat /tmp/pam-status.json
-              echo ""
-              LAST_ERROR=$(node -e "try{console.log(JSON.parse(require('fs').readFileSync('/tmp/pam-status.json','utf8')).lastError||'')}catch(e){console.log('')}")
-              if [ -n "$LAST_ERROR" ]; then
-                echo "PAM sync failed: $LAST_ERROR"
-                exit 1
-              fi
-              echo "PAM sync completed successfully."
-              exit 0
-            fi
-          done
+          echo "Trigger response ($HTTP_CODE):"
+          cat /tmp/pam-sync-resp.json
+          echo ""
 
-          echo "Timed out waiting for PAM sync to finish (sync may still be running)."
-          exit 1
+          if [ "$HTTP_CODE" != "202" ] && [ "$HTTP_CODE" != "200" ]; then
+            echo "PAM sync trigger failed with HTTP $HTTP_CODE"
+            exit 1
+          fi
+
+          echo "PAM sync triggered successfully (running asynchronously on the platform)."
