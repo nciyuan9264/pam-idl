@@ -40,6 +40,10 @@ struct UploadAvatarData {
   2: required string url,
 }
 
+struct UploadAvatarReq {
+  1: required binary avatar (api.form = "avatar"),
+}
+
 struct UploadAvatarResp {
   1: required i32 status_code,
   2: required string message,
@@ -92,7 +96,7 @@ service AuthService {
     api.auth_required = "true"
   )
 
-  UploadAvatarResp UploadAvatar(1: required binary avatar) (
+  UploadAvatarResp UploadAvatar(1: required UploadAvatarReq req) (
     api.post = "/auth/avatar/upload",
     api.operation_id = "uploadAvatar",
     api.summary = "上传头像",
