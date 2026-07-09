@@ -78,8 +78,7 @@ service AuthService {
   BaseResp Logout() (
     api.post = "/auth/logout",
     api.operation_id = "logout",
-    api.summary = "退出登录",
-    api.auth_required = "true"
+    api.summary = "退出登录"
   )
 
   AuthCenterResp GetProfile() (
