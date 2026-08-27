@@ -1,24 +1,84 @@
 {
+  "schemaVersion": 2,
   "repository": "pam-idl",
   "defaultBranch": "master",
   "services": [
     {
       "name": "AuthService",
-      "idl": "idl/auth.thrift",
+      "version": "v1",
+      "idl": "idl/auth/v1/service.thrift",
+      "namespace": "pam.auth.v1",
       "owner": "frontend-platform",
-      "description": "认证中心 HTTP API IDL"
+      "visibility": "public",
+      "httpPrefix": "/platform/auth",
+      "description": "认证中心 Kitex RPC 与 Platform HTTP 契约"
+    },
+    {
+      "name": "PlatformControlService",
+      "version": "v1",
+      "idl": "idl/game_platform_control/v1/service.thrift",
+      "namespace": "pam.platform.control.v1",
+      "owner": "game-platform",
+      "visibility": "internal",
+      "description": "游戏平台内部 Control Plane RPC 契约"
+    },
+    {
+      "name": "PamPlatformService",
+      "version": "v1",
+      "idl": "idl/pam_platform/v1/service.thrift",
+      "namespace": "pam.platform.v1",
+      "owner": "pam-platform",
+      "visibility": "public",
+      "httpPrefix": "/api",
+      "description": "PAM 平台 IDL 托管与同步 RPC/HTTP 契约"
     },
     {
       "name": "OCRBackendService",
-      "idl": "idl/ocr_backend.thrift",
+      "version": "v1",
+      "idl": "idl/ocr_backend/v1/service.thrift",
+      "namespace": "pam.ocr.v1",
       "owner": "ai-platform",
+      "visibility": "public",
       "description": "OCR Backend 火山方舟 HTTP API IDL"
     },
     {
       "name": "ReaderService",
-      "idl": "idl/reader.thrift",
+      "version": "v1",
+      "idl": "idl/reader/v1/service.thrift",
+      "namespace": "pam.reader.v1",
       "owner": "frontend-platform",
+      "visibility": "public",
       "description": "阅读器图书管理 HTTP API IDL"
+    },
+    {
+      "name": "AcquireService",
+      "version": "v1",
+      "idl": "idl/games/acquire/v1/service.thrift",
+      "namespace": "pam.games.acquire.v1",
+      "owner": "game-platform",
+      "visibility": "public",
+      "httpPrefix": "/api/acquire",
+      "description": "Acquire 游戏房间、历史、回放和排行榜契约"
+    },
+    {
+      "name": "SplendorService",
+      "version": "v1",
+      "idl": "idl/games/splendor/v1/service.thrift",
+      "namespace": "pam.games.splendor.v1",
+      "owner": "game-platform",
+      "visibility": "public",
+      "httpPrefix": "/api/splendor",
+      "description": "Splendor 游戏房间、历史、回放和排行榜契约"
+    },
+    {
+      "name": "DavinciService",
+      "version": "v1",
+      "idl": "idl/games/davinci/v1/service.thrift",
+      "namespace": "pam.games.davinci.v1",
+      "owner": "game-platform",
+      "visibility": "public",
+      "httpPrefix": "/api/davinci",
+      "description": "Davinci 游戏房间、历史和排行榜契约"
     }
   ]
 }

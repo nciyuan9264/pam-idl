@@ -1,5 +1,5 @@
-namespace go pam_platform
-namespace js pam_platform
+namespace go pam.platform.v1
+namespace js pam.platform.v1
 
 // ---------- 通用响应 ----------
 
@@ -29,6 +29,7 @@ struct SyncIDLReq {
   4: required string commit,
   5: optional string event,
   6: required list<IDLFile> files,
+  7: optional string generatedAt,
 }
 
 struct SyncResult {
@@ -55,6 +56,7 @@ struct SnapshotReq {
   1: optional string repository (api.query = "repository"),
   2: optional string service (api.query = "service"),
   3: optional string branch (api.query = "branch"),
+  4: optional string commit (api.query = "commit"),
 }
 
 struct RepositorySummary {
@@ -100,6 +102,7 @@ struct ServiceSummary {
   9: required list<Endpoint> endpoints,
   10: required map<string,ThriftStruct> structs,
   11: required string rawIdl,
+  12: optional map<string,string> includedIdl,
 }
 
 struct SnapshotResp {
@@ -127,44 +130,99 @@ struct ServiceCatalogResp {
   1: required list<ServiceCatalogItem> services,
 }
 
-service PamPlatformService {
-  HealthzResp Healthz() (
-    api.get = "/healthz",
-    api.operation_id = "healthz",
-    api.summary = "健康检查"
-  )
+// ---------- 不可变版本与生成客户端 ----------
 
-  SnapshotResp GetSnapshot(1: SnapshotReq req) (
-    api.get = "/api/snapshot",
-    api.operation_id = "getSnapshot",
-    api.summary = "获取 IDL 平台快照",
-    api.auth_required = "true"
-  )
+struct ClientArtifactSummary {
+  1: required string language,
+  2: required string modulePath,
+  3: optional string clientCommit,
+  4: optional string clientTag,
+  5: required string status,
+  6: optional string error,
+  7: required string updatedAt,
+}
 
-  ServiceCatalogResp ListServices() (
-    api.get = "/api/services",
-    api.operation_id = "listServices",
-    api.summary = "获取轻量服务目录",
-    api.auth_required = "true"
-  )
+struct IDLVersionSummary {
+  1: required string repository,
+  2: required string service,
+  3: required string branch,
+  4: required string ref,
+  5: required string commit,
+  6: required string shortCommit,
+  7: optional string tag,
+  8: required string checksum,
+  9: required string generatedAt,
+  10: required bool isHead,
+  11: required string filePath,
+  12: required i32 endpointCount,
+  13: optional ClientArtifactSummary clientArtifact,
+}
 
-  SyncStatusResp GetOSSSyncStatus() (
-    api.get = "/api/idl/oss-sync/status",
-    api.operation_id = "getOssSyncStatus",
-    api.summary = "获取 OSS IDL 同步状态"
-  )
+struct ListServiceVersionsReq {
+  1: optional string repository (api.query = "repository"),
+  2: optional string service (api.query = "service"),
+  3: optional string branch (api.query = "branch"),
+}
 
-  StatusResp SyncIDL(1: required SyncIDLReq req) (
-    api.post = "/api/idl/sync",
-    api.operation_id = "syncIdl",
-    api.summary = "同步提交的 IDL 文件",
-    api.auth_required = "true"
-  )
+struct ServiceVersionsResp {
+  1: required list<IDLVersionSummary> versions,
+}
 
-  StatusResp TriggerOSSSync() (
-    api.post = "/api/idl/oss-sync",
-    api.operation_id = "triggerOssSync",
-    api.summary = "触发 OSS IDL 后台同步",
-    api.auth_required = "true"
-  )
+struct ReportClientBuildReq {
+  1: required string repository,
+  2: required string commit,
+  3: optional string language,
+  4: required string status,
+  5: optional string modulePath,
+  6: optional string clientCommit,
+  7: optional string clientTag,
+  8: optional string error,
+}
+
+// ---------- Gateway 环境版本控制 ----------
+
+struct PromoteGatewayVersionReq {
+  1: required string environment,
+  2: required string service,
+  3: required string repository,
+  4: required string commit,
+  5: optional string entryPath,
+}
+
+struct RollbackGatewayVersionReq {
+  1: required string environment,
+  2: required string service,
+}
+
+struct GatewayConfigReq {
+  1: required string environment,
+}
+
+struct GatewayRoute {
+  1: required string method,
+  2: required string path,
+}
+
+struct GatewayServiceBinding {
+  1: required string service,
+  2: required string repository,
+  3: required string commit,
+  4: required string entryPath,
+  5: required list<IDLFile> files,
+  6: required list<GatewayRoute> routes,
+}
+
+struct GatewayConfigResp {
+  1: required string environment,
+  2: required string revision,
+  3: required list<GatewayServiceBinding> bindings,
+}
+
+struct ReportGatewayStatusReq {
+  1: required string environment,
+  2: required string gatewayId,
+  3: required string revision,
+  4: required string status,
+  5: optional string error,
+  6: required map<string,string> applied,
 }

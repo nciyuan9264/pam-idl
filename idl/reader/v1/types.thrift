@@ -1,5 +1,5 @@
-namespace go reader
-namespace js reader
+namespace go pam.reader.v1
+namespace js pam.reader.v1
 
 struct Novel {
   1: optional i64 id,
@@ -66,34 +66,3 @@ struct ListBooksResp {
   7: required i32 total_pages,
 }
 
-service ReaderService {
-  ListBooksResp ListBooks(1: ListBooksReq req) (
-    api.get = "/reader/list",
-    api.operation_id = "listBooks",
-    api.summary = "获取当前用户的图书列表",
-    api.auth_required = "true"
-  )
-
-  BookResp CreateBook(1: required CreateBookReq req) (
-    api.post = "/reader/create",
-    api.operation_id = "createBook",
-    api.summary = "创建图书记录",
-    api.auth_required = "true",
-    api.content_type = "application/json"
-  )
-
-  BookResp UpdateBook(1: required UpdateBookReq req) (
-    api.post = "/reader/update",
-    api.operation_id = "updateBook",
-    api.summary = "更新图书记录",
-    api.auth_required = "true",
-    api.content_type = "application/json"
-  )
-
-  BaseResp DeleteBook(1: DeleteBookReq req) (
-    api.post = "/reader/delete",
-    api.operation_id = "deleteBook",
-    api.summary = "删除图书记录",
-    api.auth_required = "true"
-  )
-}

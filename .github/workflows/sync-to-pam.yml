@@ -4,6 +4,8 @@ on:
   push:
     branches:
       - '**'
+    tags:
+      - '**'
   delete:
   workflow_dispatch:
 
@@ -14,9 +16,12 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Validate IDL manifest, includes and routes
+        run: node scripts/validate.js
+
       - name: Setup ossutil
         run: |
-          wget -q http://gosspublic.alicdn.com/ossutil/1.7.15/ossutil64
+          wget -q https://gosspublic.alicdn.com/ossutil/1.7.15/ossutil64
           chmod +x ossutil64
           sudo mv ossutil64 /usr/local/bin/ossutil
 
@@ -39,30 +44,36 @@ jobs:
             -i "$OSS_ACCESS_KEY_ID" \
             -k "$OSS_ACCESS_KEY_SECRET"
 
-          BRANCH=$(node -e "console.log(encodeURIComponent(process.env.GITHUB_REF_NAME))")
-          DEST="oss://${OSS_BUCKET}/${OSS_PREFIX}/${PAM_IDL_OSS_REPO_NAME}/${BRANCH}"
+          REF_NAME=$(node -e "console.log(encodeURIComponent(process.env.GITHUB_REF_NAME))")
+          COMMIT_DEST="oss://${OSS_BUCKET}/${OSS_PREFIX}/${PAM_IDL_OSS_REPO_NAME}/commits/${GITHUB_SHA}"
+          HEAD_DEST="oss://${OSS_BUCKET}/${OSS_PREFIX}/${PAM_IDL_OSS_REPO_NAME}/branches/${REF_NAME}"
 
           node <<'NODE'
           const fs = require('fs');
           const payload = {
             commit: process.env.GITHUB_SHA,
             branch: process.env.GITHUB_REF_NAME,
+            ref: process.env.GITHUB_REF,
             generatedAt: new Date().toISOString(),
           };
           fs.writeFileSync('/tmp/pam-idl-meta.json', JSON.stringify(payload));
           NODE
 
-          echo "Uploading IDL to $DEST ..."
-          ossutil sync ./idl/ "$DEST/idl/" --include "*.thrift" --delete -f
-          ossutil cp /tmp/pam-idl-meta.json "$DEST/_meta.json" -f
+          echo "Uploading immutable IDL version to $COMMIT_DEST ..."
+          ossutil sync ./idl/ "$COMMIT_DEST/idl/" -f
+          ossutil cp ./idl/manifest.json "$COMMIT_DEST/manifest.json" -f
+          ossutil cp /tmp/pam-idl-meta.json "$COMMIT_DEST/_meta.json" -f
+
+          echo "Updating branch head at $HEAD_DEST ..."
+          ossutil cp /tmp/pam-idl-meta.json "$HEAD_DEST/head.json" -f
 
       - name: Trigger PAM platform OSS sync
         env:
           PAM_PLATFORM_URL: ${{ secrets.PAM_PLATFORM_URL }}
           PAM_SYNC_TOKEN: ${{ secrets.PAM_SYNC_TOKEN }}
         run: |
-          if [ -z "$PAM_PLATFORM_URL" ]; then
-            echo "PAM_PLATFORM_URL secret is not set"
+          if [ -z "$PAM_PLATFORM_URL" ] || [ -z "$PAM_SYNC_TOKEN" ]; then
+            echo "PAM_PLATFORM_URL or PAM_SYNC_TOKEN secret is not set"
             exit 1
           fi
 
@@ -92,7 +103,7 @@ jobs:
     steps:
       - name: Setup ossutil
         run: |
-          wget -q http://gosspublic.alicdn.com/ossutil/1.7.15/ossutil64
+          wget -q https://gosspublic.alicdn.com/ossutil/1.7.15/ossutil64
           chmod +x ossutil64
           sudo mv ossutil64 /usr/local/bin/ossutil
 
@@ -117,17 +128,17 @@ jobs:
             -k "$OSS_ACCESS_KEY_SECRET"
 
           BRANCH=$(node -e "console.log(encodeURIComponent(process.env.RAW_BRANCH))")
-          DEST="oss://${OSS_BUCKET}/${OSS_PREFIX}/${PAM_IDL_OSS_REPO_NAME}/${BRANCH}/"
-          echo "Deleting IDL branch from $DEST ..."
-          ossutil rm "$DEST" -r -f || true
+          HEAD_DEST="oss://${OSS_BUCKET}/${OSS_PREFIX}/${PAM_IDL_OSS_REPO_NAME}/branches/${BRANCH}/"
+          echo "Deleting IDL branch head from $HEAD_DEST ..."
+          ossutil rm "$HEAD_DEST" -r -f || true
 
       - name: Trigger PAM platform OSS sync
         env:
           PAM_PLATFORM_URL: ${{ secrets.PAM_PLATFORM_URL }}
           PAM_SYNC_TOKEN: ${{ secrets.PAM_SYNC_TOKEN }}
         run: |
-          if [ -z "$PAM_PLATFORM_URL" ]; then
-            echo "PAM_PLATFORM_URL secret is not set"
+          if [ -z "$PAM_PLATFORM_URL" ] || [ -z "$PAM_SYNC_TOKEN" ]; then
+            echo "PAM_PLATFORM_URL or PAM_SYNC_TOKEN secret is not set"
             exit 1
           fi
 
