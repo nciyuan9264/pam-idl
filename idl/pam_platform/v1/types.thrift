@@ -111,6 +111,7 @@ struct SnapshotReq {
   2: optional string service (api.query = "service"),
   3: optional string branch (api.query = "branch"),
   4: optional string commit (api.query = "commit"),
+  5: optional string psm (api.query = "psm"),
 }
 
 struct RepositorySummary {
@@ -158,6 +159,8 @@ struct ServiceSummary {
   11: required string rawIdl,
   12: optional map<string,string> includedIdl,
   13: optional string psm,
+  14: optional string semanticVersion,
+  15: optional i64 versionNumber,
 }
 
 struct SnapshotResp {
@@ -180,6 +183,8 @@ struct ServiceCatalogItem {
   2: required string repository,
   3: required list<ServiceBranchSummary> branches,
   4: optional string psm,
+  5: optional string semanticVersion,
+  6: optional i64 versionNumber,
 }
 
 struct ServiceCatalogResp {
@@ -217,12 +222,15 @@ struct IDLVersionSummary {
   12: required i32 endpointCount,
   13: optional ClientArtifactSummary clientArtifact,
   14: optional i64 versionNumber,
+  15: optional string semanticVersion,
+  16: optional string psm,
 }
 
 struct ListServiceVersionsReq {
   1: optional string repository (api.query = "repository"),
   2: optional string service (api.query = "service"),
   3: optional string branch (api.query = "branch"),
+  4: optional string psm (api.query = "psm"),
 }
 
 struct ServiceVersionsResp {
