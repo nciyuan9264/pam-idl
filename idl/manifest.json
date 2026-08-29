@@ -1,83 +1,131 @@
 {
-  "schemaVersion": 2,
+  "schemaVersion": 3,
   "repository": "pam-idl",
   "defaultBranch": "master",
   "services": [
     {
       "name": "AuthService",
+      "psm": "pam.auth.rpc",
       "version": "v1",
       "idl": "idl/auth/v1/service.thrift",
       "namespace": "pam.auth.v1",
       "owner": "frontend-platform",
       "visibility": "public",
       "httpPrefix": "/platform/auth",
+      "goClient": {
+        "module": "github.com/nciyuan9264/pam-auth-client",
+        "repository": "nciyuan9264/pam-auth-client",
+        "baseRef": "main"
+      },
       "description": "认证中心 Kitex RPC 与 Platform HTTP 契约"
     },
     {
       "name": "PlatformControlService",
+      "psm": "game.platform.control",
       "version": "v1",
       "idl": "idl/game_platform_control/v1/service.thrift",
       "namespace": "pam.platform.control.v1",
       "owner": "game-platform",
       "visibility": "internal",
+      "goClient": {
+        "module": "github.com/nciyuan9264/game-platform-control-client",
+        "repository": "nciyuan9264/game-platform-control-client",
+        "baseRef": "main"
+      },
       "description": "游戏平台内部 Control Plane RPC 契约"
     },
     {
       "name": "PamPlatformService",
+      "psm": "pam.platform.rpc",
       "version": "v1",
       "idl": "idl/pam_platform/v1/service.thrift",
       "namespace": "pam.platform.v1",
       "owner": "pam-platform",
       "visibility": "public",
       "httpPrefix": "/api",
+      "goClient": {
+        "module": "github.com/nciyuan9264/pam-platform-client",
+        "repository": "nciyuan9264/pam-platform-client",
+        "baseRef": "main"
+      },
       "description": "PAM 平台 IDL 托管与同步 RPC/HTTP 契约"
     },
     {
       "name": "OCRBackendService",
+      "psm": "pam.ocr.rpc",
       "version": "v1",
       "idl": "idl/ocr_backend/v1/service.thrift",
       "namespace": "pam.ocr.v1",
       "owner": "ai-platform",
       "visibility": "public",
+      "goClient": {
+        "module": "github.com/nciyuan9264/pam-ocr-client",
+        "repository": "nciyuan9264/pam-ocr-client",
+        "baseRef": "main"
+      },
       "description": "OCR Backend 火山方舟 HTTP API IDL"
     },
     {
       "name": "ReaderService",
+      "psm": "pam.reader.rpc",
       "version": "v1",
       "idl": "idl/reader/v1/service.thrift",
       "namespace": "pam.reader.v1",
       "owner": "frontend-platform",
       "visibility": "public",
+      "goClient": {
+        "module": "github.com/nciyuan9264/pam-reader-client",
+        "repository": "nciyuan9264/pam-reader-client",
+        "baseRef": "main"
+      },
       "description": "阅读器图书管理 HTTP API IDL"
     },
     {
       "name": "AcquireService",
+      "psm": "game.acquire.rpc",
       "version": "v1",
       "idl": "idl/games/acquire/v1/service.thrift",
       "namespace": "pam.games.acquire.v1",
       "owner": "game-platform",
       "visibility": "public",
       "httpPrefix": "/api/acquire",
+      "goClient": {
+        "module": "github.com/nciyuan9264/game-acquire-client",
+        "repository": "nciyuan9264/game-acquire-client",
+        "baseRef": "main"
+      },
       "description": "Acquire 游戏房间、历史、回放和排行榜契约"
     },
     {
       "name": "SplendorService",
+      "psm": "game.splendor.rpc",
       "version": "v1",
       "idl": "idl/games/splendor/v1/service.thrift",
       "namespace": "pam.games.splendor.v1",
       "owner": "game-platform",
       "visibility": "public",
       "httpPrefix": "/api/splendor",
+      "goClient": {
+        "module": "github.com/nciyuan9264/game-splendor-client",
+        "repository": "nciyuan9264/game-splendor-client",
+        "baseRef": "main"
+      },
       "description": "Splendor 游戏房间、历史、回放和排行榜契约"
     },
     {
       "name": "DavinciService",
+      "psm": "game.davinci.rpc",
       "version": "v1",
       "idl": "idl/games/davinci/v1/service.thrift",
       "namespace": "pam.games.davinci.v1",
       "owner": "game-platform",
       "visibility": "public",
       "httpPrefix": "/api/davinci",
+      "goClient": {
+        "module": "github.com/nciyuan9264/game-davinci-client",
+        "repository": "nciyuan9264/game-davinci-client",
+        "baseRef": "main"
+      },
       "description": "Davinci 游戏房间、历史和排行榜契约"
     }
   ]

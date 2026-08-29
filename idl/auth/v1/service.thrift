@@ -7,43 +7,50 @@ service AuthService {
   types.BaseResp Register(1: required types.RegisterReq req) throws (1: types.AuthError err) (
     api.post = "/platform/auth/register",
     api.operation_id = "register",
-    api.summary = "注册账号"
+    api.summary = "注册账号",
+    api.auth_required = "false"
   )
 
   types.SendCodeResp SendCode(1: required types.SendCodeReq req) throws (1: types.AuthError err) (
     api.post = "/platform/auth/send-code",
     api.operation_id = "sendCode",
-    api.summary = "发送验证码"
+    api.summary = "发送验证码",
+    api.auth_required = "false"
   )
 
   types.LoginResp LoginByPassword(1: required types.LoginByPasswordReq req) throws (1: types.AuthError err) (
     api.post = "/platform/auth/login/password",
     api.operation_id = "loginByPassword",
-    api.summary = "密码登录"
+    api.summary = "密码登录",
+    api.auth_required = "false"
   )
 
   types.LoginResp LoginByCode(1: required types.LoginByCodeReq req) throws (1: types.AuthError err) (
     api.post = "/platform/auth/verify-code",
     api.operation_id = "verifyCode",
-    api.summary = "验证验证码并登录"
+    api.summary = "验证验证码并登录",
+    api.auth_required = "false"
   )
 
   types.LoginResp RefreshToken(1: required types.RefreshTokenReq req) throws (1: types.AuthError err) (
     api.post = "/platform/auth/refresh",
     api.operation_id = "refresh",
-    api.summary = "刷新 token"
+    api.summary = "刷新 token",
+    api.auth_required = "false"
   )
 
   types.VerifyTokenResp VerifyToken(1: required types.VerifyTokenReq req) throws (1: types.AuthError err) (
     api.post = "/platform/auth/verify-token",
     api.operation_id = "verifyToken",
-    api.summary = "验证 token"
+    api.summary = "验证 token",
+    api.auth_required = "false"
   )
 
   types.BaseResp Logout(1: required types.LogoutReq req) throws (1: types.AuthError err) (
     api.post = "/platform/auth/logout",
     api.operation_id = "logout",
-    api.summary = "退出登录"
+    api.summary = "退出登录",
+    api.auth_required = "false"
   )
 
   types.UserResp GetProfile(1: required types.GetProfileReq req) throws (1: types.AuthError err) (
@@ -69,16 +76,21 @@ service AuthService {
   )
 
   types.UserResp GetUser(1: required types.GetUserReq req) throws (1: types.AuthError err) (
-    api.internal = "true"
+    api.internal = "true",
+    api.auth_required = "true",
+    api.auth_roles = "admin"
   )
 
   types.ListUsersResp ListUsers(1: required types.ListUsersReq req) throws (1: types.AuthError err) (
-    api.internal = "true"
+    api.internal = "true",
+    api.auth_required = "true",
+    api.auth_roles = "admin"
   )
 
   types.JWKSResp GetJWKS(1: required types.JWKSReq req) throws (1: types.AuthError err) (
     api.get = "/.well-known/jwks.json",
     api.operation_id = "getJWKS",
-    api.summary = "获取 JWKS"
+    api.summary = "获取 JWKS",
+    api.auth_required = "false"
   )
 }

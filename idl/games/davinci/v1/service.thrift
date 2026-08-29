@@ -7,14 +7,14 @@ include "../../common/v1/history.thrift"
 include "../../common/v1/leaderboard.thrift"
 
 service DavinciService {
-  room.CreateRoomResp CreateRoom() (
+  room.CreateRoomResp CreateRoom(1: room.EmptyReq req) (
     api.post = "/api/davinci/room/create",
     api.operation_id = "createRoom",
     api.summary = "创建房间",
     api.auth_required = "true"
   )
 
-  room.RoomListResp GetRoomList() (
+  room.RoomListResp GetRoomList(1: room.EmptyReq req) (
     api.get = "/api/davinci/room/list",
     api.operation_id = "getRoomList",
     api.summary = "获取房间列表",

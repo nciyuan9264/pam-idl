@@ -12,7 +12,12 @@ const reachable = new Set();
 const routes = new Map();
 const serviceNames = new Set();
 const namespaces = new Set();
+const psms = new Set();
+const clientModules = new Set();
+const clientRepositories = new Set();
 const definitions = new Map();
+let rpcMethodCount = 0;
+let internalMethodCount = 0;
 
 function relativeToRepository(absolutePath) {
   return path.relative(repositoryRoot, absolutePath).split(path.sep).join('/');
@@ -52,8 +57,8 @@ function visit(filePath, stack = []) {
   }
 }
 
-if (manifest.schemaVersion !== 2) {
-  errors.push('manifest.schemaVersion must be 2');
+if (manifest.schemaVersion !== 3) {
+  errors.push('manifest.schemaVersion must be 3');
 }
 if (!Array.isArray(manifest.services) || manifest.services.length === 0) {
   errors.push('manifest.services must not be empty');
@@ -61,14 +66,34 @@ if (!Array.isArray(manifest.services) || manifest.services.length === 0) {
 
 for (const service of manifest.services ?? []) {
   const entrypoint = service.entrypoint ?? service.idl;
-  if (!service.name || !entrypoint || !service.namespace || !service.version || !service.owner) {
+  const client = service.goClient;
+  if (!service.name || !service.psm || !entrypoint || !service.namespace || !service.version || !service.owner ||
+      !client?.module || !client?.repository || !client?.baseRef) {
     errors.push(`invalid manifest service: ${JSON.stringify(service)}`);
     continue;
   }
   if (serviceNames.has(service.name)) errors.push(`duplicate service name: ${service.name}`);
   if (namespaces.has(service.namespace)) errors.push(`duplicate service namespace: ${service.namespace}`);
+  if (psms.has(service.psm)) errors.push(`duplicate service psm: ${service.psm}`);
+  if (clientModules.has(client.module)) errors.push(`duplicate Go client module: ${client.module}`);
+  if (clientRepositories.has(client.repository)) errors.push(`duplicate Go client repository: ${client.repository}`);
+  if (!/^[a-z][a-z0-9_-]*\.[a-z][a-z0-9_-]*\.[a-z][a-z0-9_-]*$/.test(service.psm)) {
+    errors.push(`${service.name}: psm must contain exactly three lower-case segments: ${service.psm}`);
+  }
+  if (!/^[A-Za-z0-9.-]+(?:\/[A-Za-z0-9._-]+)+$/.test(client.module)) {
+    errors.push(`${service.name}: invalid Go client module ${client.module}`);
+  }
+  if (!/^[A-Za-z0-9._-]+\/[A-Za-z0-9._-]+$/.test(client.repository)) {
+    errors.push(`${service.name}: invalid Go client repository ${client.repository}`);
+  }
+  if (!/^[A-Za-z0-9._/-]+$/.test(client.baseRef) || client.baseRef.includes('..')) {
+    errors.push(`${service.name}: invalid Go client baseRef ${client.baseRef}`);
+  }
   serviceNames.add(service.name);
   namespaces.add(service.namespace);
+  psms.add(service.psm);
+  clientModules.add(client.module);
+  clientRepositories.add(client.repository);
 
   const absolute = path.resolve(repositoryRoot, entrypoint);
   if (!fs.existsSync(absolute)) {
@@ -86,6 +111,28 @@ for (const service of manifest.services ?? []) {
   const declaredServices = Array.from(source.matchAll(/^\s*service\s+(\w+)/gm), match => match[1]);
   if (declaredServices.length !== 1 || declaredServices[0] !== service.name) {
     errors.push(`${service.name}: entrypoint must declare exactly that service`);
+  }
+  const serviceBody = source.match(new RegExp(`service\\s+${service.name}\\s*\\{([\\s\\S]*?)^\\}`, 'm'))?.[1] ?? '';
+  const methodMatches = Array.from(serviceBody.matchAll(
+    /^\s*(?:oneway\s+)?[A-Za-z_][\w.<>, ]*\s+(\w+)\s*\([^)]*\)\s*(?:throws\s*\([^)]*\)\s*)?(?:\(|$)/gm,
+  ));
+  for (let index = 0; index < methodMatches.length; index += 1) {
+    const method = methodMatches[index];
+    const next = methodMatches[index + 1];
+    const block = serviceBody.slice(method.index, next?.index ?? serviceBody.length);
+    const httpAnnotations = Array.from(block.matchAll(/api\.(get|post|put|patch|delete)\s*=\s*"([^"]+)"/g));
+    const internal = /api\.internal\s*=\s*"true"/.test(block);
+    rpcMethodCount += 1;
+    if (internal) internalMethodCount += 1;
+    if (httpAnnotations.length === 0 && !internal) {
+      errors.push(`${service.name}.${method[1]}: method must declare one HTTP annotation or api.internal = "true"`);
+    }
+    if (httpAnnotations.length > 1 || (httpAnnotations.length > 0 && internal)) {
+      errors.push(`${service.name}.${method[1]}: method has conflicting exposure annotations`);
+    }
+  }
+  for (const match of source.matchAll(/^\s*\S+\s+(\w+)\s*\(\s*\)\s*\(/gm)) {
+    errors.push(`${service.name}.${match[1]}: HTTPThriftGeneric requires at least one argument`);
   }
   for (const match of source.matchAll(/api\.(get|post|put|patch|delete)\s*=\s*"([^"]+)"/g)) {
     const key = `${match[1].toUpperCase()} ${match[2]}`;
@@ -122,4 +169,7 @@ if (errors.length > 0) {
   process.exit(1);
 }
 
-console.log(`validated ${manifest.services.length} services, ${reachable.size} thrift files, ${routes.size} HTTP routes`);
+console.log(
+  `validated ${manifest.services.length} services, ${reachable.size} thrift files, ` +
+  `${rpcMethodCount} RPC methods (${routes.size} HTTP, ${internalMethodCount} internal)`,
+);

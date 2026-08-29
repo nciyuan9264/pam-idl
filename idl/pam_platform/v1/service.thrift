@@ -4,7 +4,7 @@ namespace js pam.platform.v1
 include "types.thrift"
 
 service PamPlatformService {
-  types.HealthzResp Healthz() (
+  types.HealthzResp Healthz(1: types.EmptyReq req) (
     api.get = "/healthz",
     api.operation_id = "healthz",
     api.summary = "健康检查"
@@ -14,47 +14,41 @@ service PamPlatformService {
     api.get = "/api/snapshot",
     api.operation_id = "getSnapshot",
     api.summary = "获取 IDL 平台快照",
-    api.auth_required = "true"
+    api.auth_required = "false"
   )
 
-  types.ServiceCatalogResp ListServices() (
+  types.ServiceCatalogResp ListServices(1: types.EmptyReq req) (
     api.get = "/api/services",
     api.operation_id = "listServices",
     api.summary = "获取轻量服务目录",
-    api.auth_required = "true"
+    api.auth_required = "false"
   )
 
   types.ServiceVersionsResp ListServiceVersions(1: required types.ListServiceVersionsReq req) (
     api.get = "/api/versions",
     api.operation_id = "listServiceVersions",
     api.summary = "获取服务的不可变 IDL 版本",
+    api.auth_required = "false"
+  )
+
+  types.PipelineRunResp EnqueueIDLPipeline(1: required types.EnqueueIDLPipelineReq req) (
+    api.post = "/api/idl/pipelines",
+    api.operation_id = "enqueueIdlPipeline",
+    api.summary = "创建精确 IDL commit 处理任务",
     api.auth_required = "true"
   )
 
-  types.SyncStatusResp GetOSSSyncStatus() (
-    api.get = "/api/idl/oss-sync/status",
-    api.operation_id = "getOssSyncStatus",
-    api.summary = "获取 OSS IDL 同步状态"
+  types.PipelineRunsResp ListPipelineRuns(1: required types.ListPipelineRunsReq req) (
+    api.get = "/api/idl/pipelines",
+    api.operation_id = "listPipelineRuns",
+    api.summary = "查询 IDL 与客户端生成任务进度",
+    api.auth_required = "false"
   )
 
   types.StatusResp SyncIDL(1: required types.SyncIDLReq req) (
     api.post = "/api/idl/sync",
     api.operation_id = "syncIdl",
     api.summary = "同步提交的 IDL 文件",
-    api.auth_required = "true"
-  )
-
-  types.StatusResp TriggerOSSSync() (
-    api.post = "/api/idl/oss-sync",
-    api.operation_id = "triggerOssSync",
-    api.summary = "触发 OSS IDL 后台同步",
-    api.auth_required = "true"
-  )
-
-  types.StatusResp ReportClientBuild(1: required types.ReportClientBuildReq req) (
-    api.post = "/api/client-builds/report",
-    api.operation_id = "reportClientBuild",
-    api.summary = "回报生成客户端构建状态",
     api.auth_required = "true"
   )
 

@@ -6,155 +6,53 @@ on:
       - '**'
     tags:
       - '**'
-  delete:
   workflow_dispatch:
 
 jobs:
   notify-pam:
-    if: github.event_name != 'delete'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Validate IDL manifest, includes and routes
         run: node scripts/validate.js
 
-      - name: Setup ossutil
-        run: |
-          wget -q https://gosspublic.alicdn.com/ossutil/1.7.15/ossutil64
-          chmod +x ossutil64
-          sudo mv ossutil64 /usr/local/bin/ossutil
-
-      - name: Upload IDL to OSS
-        env:
-          OSS_ACCESS_KEY_ID: ${{ secrets.OSS_ACCESS_KEY_ID }}
-          OSS_ACCESS_KEY_SECRET: ${{ secrets.OSS_ACCESS_KEY_SECRET }}
-          OSS_ENDPOINT: ${{ secrets.OSS_ENDPOINT }}
-          OSS_BUCKET: ${{ secrets.OSS_BUCKET }}
-          OSS_PREFIX: ${{ vars.OSS_PREFIX || 'idl' }}
-          PAM_IDL_OSS_REPO_NAME: ${{ vars.PAM_IDL_OSS_REPO_NAME || 'pam-idl' }}
-        run: |
-          if [ -z "$OSS_ACCESS_KEY_ID" ] || [ -z "$OSS_ACCESS_KEY_SECRET" ] || [ -z "$OSS_ENDPOINT" ] || [ -z "$OSS_BUCKET" ]; then
-            echo "OSS credentials, endpoint or bucket secret is not set"
-            exit 1
-          fi
-
-          ossutil config \
-            -e "$OSS_ENDPOINT" \
-            -i "$OSS_ACCESS_KEY_ID" \
-            -k "$OSS_ACCESS_KEY_SECRET"
-
-          REF_NAME=$(node -e "console.log(encodeURIComponent(process.env.GITHUB_REF_NAME))")
-          COMMIT_DEST="oss://${OSS_BUCKET}/${OSS_PREFIX}/${PAM_IDL_OSS_REPO_NAME}/commits/${GITHUB_SHA}"
-          HEAD_DEST="oss://${OSS_BUCKET}/${OSS_PREFIX}/${PAM_IDL_OSS_REPO_NAME}/branches/${REF_NAME}"
-
-          node <<'NODE'
-          const fs = require('fs');
-          const payload = {
-            commit: process.env.GITHUB_SHA,
-            branch: process.env.GITHUB_REF_NAME,
-            ref: process.env.GITHUB_REF,
-            generatedAt: new Date().toISOString(),
-          };
-          fs.writeFileSync('/tmp/pam-idl-meta.json', JSON.stringify(payload));
-          NODE
-
-          echo "Uploading immutable IDL version to $COMMIT_DEST ..."
-          ossutil sync ./idl/ "$COMMIT_DEST/idl/" -f
-          ossutil cp ./idl/manifest.json "$COMMIT_DEST/manifest.json" -f
-          ossutil cp /tmp/pam-idl-meta.json "$COMMIT_DEST/_meta.json" -f
-
-          echo "Updating branch head at $HEAD_DEST ..."
-          ossutil cp /tmp/pam-idl-meta.json "$HEAD_DEST/head.json" -f
-
-      - name: Trigger PAM platform OSS sync
+      - name: Create PAM Git pipeline
         env:
           PAM_PLATFORM_URL: ${{ secrets.PAM_PLATFORM_URL }}
           PAM_SYNC_TOKEN: ${{ secrets.PAM_SYNC_TOKEN }}
+          PAM_IDL_REPOSITORY_NAME: ${{ vars.PAM_IDL_REPOSITORY_NAME || 'pam-idl' }}
         run: |
           if [ -z "$PAM_PLATFORM_URL" ] || [ -z "$PAM_SYNC_TOKEN" ]; then
             echo "PAM_PLATFORM_URL or PAM_SYNC_TOKEN secret is not set"
             exit 1
           fi
 
-          echo "Triggering PAM platform to sync all IDL branches..."
+          echo "Creating PAM pipeline for ${GITHUB_REF}@${GITHUB_SHA}..."
+          jq -nc \
+            --arg eventId "${GITHUB_REPOSITORY}:${GITHUB_RUN_ID}:${GITHUB_RUN_ATTEMPT}" \
+            --arg repository "$PAM_IDL_REPOSITORY_NAME" \
+            --arg ref "$GITHUB_REF" \
+            --arg refName "$GITHUB_REF_NAME" \
+            --arg commit "$GITHUB_SHA" \
+            --arg event "$GITHUB_EVENT_NAME" \
+            --arg generatedAt "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
+            --argjson sequence "$GITHUB_RUN_ID" \
+            '{eventId:$eventId,repository:$repository,ref:$ref,refName:$refName,commit:$commit,event:$event,generatedAt:$generatedAt,sequence:$sequence}' \
+            > /tmp/pam-pipeline-request.json
           HTTP_CODE=$(curl -sS -o /tmp/pam-sync-resp.json -w "%{http_code}" \
-            -X POST "$PAM_PLATFORM_URL/api/idl/oss-sync" \
+            -X POST "$PAM_PLATFORM_URL/api/idl/pipelines" \
             -H "Content-Type: application/json" \
-            -H "Authorization: Bearer $PAM_SYNC_TOKEN")
-
-          echo "Trigger response ($HTTP_CODE):"
-          cat /tmp/pam-sync-resp.json
-          echo ""
-
-          # The platform runs the sync in the background and returns 202 Accepted.
-          # We only need to confirm the trigger was accepted; the actual sync
-          # runs asynchronously on the platform and is not awaited here.
-          if [ "$HTTP_CODE" != "202" ] && [ "$HTTP_CODE" != "200" ]; then
-            echo "PAM sync trigger failed with HTTP $HTTP_CODE"
-            exit 1
-          fi
-
-          echo "PAM sync triggered successfully (running asynchronously on the platform)."
-
-  cleanup-deleted-branch:
-    if: github.event_name == 'delete' && github.event.ref_type == 'branch'
-    runs-on: ubuntu-latest
-    steps:
-      - name: Setup ossutil
-        run: |
-          wget -q https://gosspublic.alicdn.com/ossutil/1.7.15/ossutil64
-          chmod +x ossutil64
-          sudo mv ossutil64 /usr/local/bin/ossutil
-
-      - name: Delete IDL branch from OSS
-        env:
-          OSS_ACCESS_KEY_ID: ${{ secrets.OSS_ACCESS_KEY_ID }}
-          OSS_ACCESS_KEY_SECRET: ${{ secrets.OSS_ACCESS_KEY_SECRET }}
-          OSS_ENDPOINT: ${{ secrets.OSS_ENDPOINT }}
-          OSS_BUCKET: ${{ secrets.OSS_BUCKET }}
-          OSS_PREFIX: ${{ vars.OSS_PREFIX || 'idl' }}
-          PAM_IDL_OSS_REPO_NAME: ${{ vars.PAM_IDL_OSS_REPO_NAME || 'pam-idl' }}
-          RAW_BRANCH: ${{ github.event.ref }}
-        run: |
-          if [ -z "$OSS_ACCESS_KEY_ID" ] || [ -z "$OSS_ACCESS_KEY_SECRET" ] || [ -z "$OSS_ENDPOINT" ] || [ -z "$OSS_BUCKET" ]; then
-            echo "OSS credentials, endpoint or bucket secret is not set"
-            exit 1
-          fi
-
-          ossutil config \
-            -e "$OSS_ENDPOINT" \
-            -i "$OSS_ACCESS_KEY_ID" \
-            -k "$OSS_ACCESS_KEY_SECRET"
-
-          BRANCH=$(node -e "console.log(encodeURIComponent(process.env.RAW_BRANCH))")
-          HEAD_DEST="oss://${OSS_BUCKET}/${OSS_PREFIX}/${PAM_IDL_OSS_REPO_NAME}/branches/${BRANCH}/"
-          echo "Deleting IDL branch head from $HEAD_DEST ..."
-          ossutil rm "$HEAD_DEST" -r -f || true
-
-      - name: Trigger PAM platform OSS sync
-        env:
-          PAM_PLATFORM_URL: ${{ secrets.PAM_PLATFORM_URL }}
-          PAM_SYNC_TOKEN: ${{ secrets.PAM_SYNC_TOKEN }}
-        run: |
-          if [ -z "$PAM_PLATFORM_URL" ] || [ -z "$PAM_SYNC_TOKEN" ]; then
-            echo "PAM_PLATFORM_URL or PAM_SYNC_TOKEN secret is not set"
-            exit 1
-          fi
-
-          echo "Triggering PAM platform after branch deletion..."
-          HTTP_CODE=$(curl -sS -o /tmp/pam-sync-resp.json -w "%{http_code}" \
-            -X POST "$PAM_PLATFORM_URL/api/idl/oss-sync" \
-            -H "Content-Type: application/json" \
-            -H "Authorization: Bearer $PAM_SYNC_TOKEN")
+            -H "Authorization: Bearer $PAM_SYNC_TOKEN" \
+            --data-binary @/tmp/pam-pipeline-request.json)
 
           echo "Trigger response ($HTTP_CODE):"
           cat /tmp/pam-sync-resp.json
           echo ""
 
           if [ "$HTTP_CODE" != "202" ] && [ "$HTTP_CODE" != "200" ]; then
-            echo "PAM sync trigger failed with HTTP $HTTP_CODE"
+            echo "PAM pipeline creation failed with HTTP $HTTP_CODE"
             exit 1
           fi
 
-          echo "PAM sync triggered successfully (running asynchronously on the platform)."
+          echo "PAM sync request accepted."

@@ -8,14 +8,14 @@ include "../../common/v1/leaderboard.thrift"
 include "../../common/v1/replay.thrift"
 
 service SplendorService {
-  room.CreateRoomResp CreateRoom() (
+  room.CreateRoomResp CreateRoom(1: room.EmptyReq req) (
     api.post = "/api/splendor/room/create",
     api.operation_id = "createRoom",
     api.summary = "创建房间",
     api.auth_required = "true"
   )
 
-  room.RoomListResp GetRoomList() (
+  room.RoomListResp GetRoomList(1: room.EmptyReq req) (
     api.get = "/api/splendor/room/list",
     api.operation_id = "getRoomList",
     api.summary = "获取房间列表",

@@ -3,6 +3,8 @@ namespace js pam.games.common.v1
 
 // 房间公共契约。仅放置所有游戏语义与字段编号一致的结构。
 
+struct EmptyReq {}
+
 struct RoomPlayer {
   1: required string playerID,
   2: required bool online,

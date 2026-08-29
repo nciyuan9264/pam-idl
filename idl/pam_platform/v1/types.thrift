@@ -3,6 +3,8 @@ namespace js pam.platform.v1
 
 // ---------- 通用响应 ----------
 
+struct EmptyReq {}
+
 struct ErrorResp {
   1: required string message,
 }
@@ -32,22 +34,74 @@ struct SyncIDLReq {
   7: optional string generatedAt,
 }
 
-struct SyncResult {
-  1: required string repository,
-  2: optional string ref,
-  3: optional string commit,
-  4: required i32 filesSynced,
-  5: required i32 branchesScanned,
-  6: required i32 branchesSynced,
-  7: required i32 branchesSkipped,
-  8: required i32 branchesDeleted,
+struct EnqueueIDLPipelineReq {
+  1: required string eventId,
+  2: required string repository,
+  3: required string ref,
+  4: required string refName,
+  5: required string commit,
+  6: optional string event,
+  7: optional string generatedAt,
+  8: optional i64 sequence,
 }
 
-struct SyncStatusResp {
-  1: required bool running,
-  2: optional SyncResult lastResult,
-  3: optional string lastError,
-  4: optional string lastRunAt,
+struct ListPipelineRunsReq {
+  1: optional string repository (api.query = "repository"),
+  2: optional string refName (api.query = "refName"),
+  3: optional string commit (api.query = "commit"),
+  4: optional string status (api.query = "status"),
+  5: optional i32 limit (api.query = "limit"),
+}
+
+struct PipelineTaskSummary {
+  1: required string status,
+  2: required string stage,
+  3: required i32 progress,
+  4: required i32 attempts,
+  5: optional string error,
+  6: optional string startedAt,
+  7: optional string finishedAt,
+}
+
+struct ServiceClientBuildSummary {
+  1: required string service,
+  2: optional string psm,
+  3: required string language,
+  4: required string modulePath,
+  5: required string clientRepository,
+  6: optional string clientCommit,
+  7: optional string clientRef,
+  8: required PipelineTaskSummary task,
+}
+
+struct PipelineRunSummary {
+  1: required i64 id,
+  2: required string eventId,
+  3: required string repository,
+  4: required string ref,
+  5: required string refName,
+  6: required string commit,
+  7: required string event,
+  8: required string status,
+  9: required PipelineTaskSummary ingestion,
+  // Legacy aggregate fields retained for older PAM frontends.
+  10: required PipelineTaskSummary clientBuild,
+  11: optional string clientRepository,
+  12: optional string clientCommit,
+  13: optional string clientRef,
+  14: optional string modulePath,
+  15: required string createdAt,
+  16: required string updatedAt,
+  17: optional list<ServiceClientBuildSummary> clientBuilds,
+  18: optional i64 versionNumber,
+}
+
+struct PipelineRunResp {
+  1: required PipelineRunSummary run,
+}
+
+struct PipelineRunsResp {
+  1: required list<PipelineRunSummary> runs,
 }
 
 // ---------- 平台快照 ----------
@@ -103,6 +157,7 @@ struct ServiceSummary {
   10: required map<string,ThriftStruct> structs,
   11: required string rawIdl,
   12: optional map<string,string> includedIdl,
+  13: optional string psm,
 }
 
 struct SnapshotResp {
@@ -124,6 +179,7 @@ struct ServiceCatalogItem {
   1: required string name,
   2: required string repository,
   3: required list<ServiceBranchSummary> branches,
+  4: optional string psm,
 }
 
 struct ServiceCatalogResp {
@@ -140,6 +196,10 @@ struct ClientArtifactSummary {
   5: required string status,
   6: optional string error,
   7: required string updatedAt,
+  8: optional string stage,
+  9: optional i32 progress,
+  10: optional string clientRepository,
+  11: optional string clientRef,
 }
 
 struct IDLVersionSummary {
@@ -156,6 +216,7 @@ struct IDLVersionSummary {
   11: required string filePath,
   12: required i32 endpointCount,
   13: optional ClientArtifactSummary clientArtifact,
+  14: optional i64 versionNumber,
 }
 
 struct ListServiceVersionsReq {
@@ -166,17 +227,6 @@ struct ListServiceVersionsReq {
 
 struct ServiceVersionsResp {
   1: required list<IDLVersionSummary> versions,
-}
-
-struct ReportClientBuildReq {
-  1: required string repository,
-  2: required string commit,
-  3: optional string language,
-  4: required string status,
-  5: optional string modulePath,
-  6: optional string clientCommit,
-  7: optional string clientTag,
-  8: optional string error,
 }
 
 // ---------- Gateway 环境版本控制 ----------
@@ -210,6 +260,7 @@ struct GatewayServiceBinding {
   4: required string entryPath,
   5: required list<IDLFile> files,
   6: required list<GatewayRoute> routes,
+  7: optional string psm,
 }
 
 struct GatewayConfigResp {
