@@ -1,10 +1,9 @@
 {
-  "schemaVersion": 3,
+  "schemaVersion": 4,
   "repository": "pam-idl",
   "defaultBranch": "master",
   "services": [
     {
-      "name": "AuthService",
       "psm": "pam.auth.rpc",
       "version": "v1",
       "idl": "idl/auth/v1/service.thrift",
@@ -20,7 +19,6 @@
       "description": "认证中心 Kitex RPC 与 Platform HTTP 契约"
     },
     {
-      "name": "PlatformControlService",
       "psm": "game.platform.control",
       "version": "v1",
       "idl": "idl/game_platform_control/v1/service.thrift",
@@ -35,7 +33,6 @@
       "description": "游戏平台内部 Control Plane RPC 契约"
     },
     {
-      "name": "PamPlatformService",
       "psm": "pam.platform.rpc",
       "version": "v1",
       "idl": "idl/pam_platform/v1/service.thrift",
@@ -51,7 +48,6 @@
       "description": "PAM 平台 IDL 托管与同步 RPC/HTTP 契约"
     },
     {
-      "name": "OCRBackendService",
       "psm": "pam.ocr.rpc",
       "version": "v1",
       "idl": "idl/ocr_backend/v1/service.thrift",
@@ -66,7 +62,6 @@
       "description": "OCR Backend 火山方舟 HTTP API IDL"
     },
     {
-      "name": "ReaderService",
       "psm": "pam.reader.rpc",
       "version": "v1",
       "idl": "idl/reader/v1/service.thrift",
@@ -81,7 +76,6 @@
       "description": "阅读器图书管理 HTTP API IDL"
     },
     {
-      "name": "AcquireService",
       "psm": "game.acquire.rpc",
       "version": "v1",
       "idl": "idl/games/acquire/v1/service.thrift",
@@ -97,7 +91,6 @@
       "description": "Acquire 游戏房间、历史、回放和排行榜契约"
     },
     {
-      "name": "SplendorService",
       "psm": "game.splendor.rpc",
       "version": "v1",
       "idl": "idl/games/splendor/v1/service.thrift",
@@ -113,7 +106,6 @@
       "description": "Splendor 游戏房间、历史、回放和排行榜契约"
     },
     {
-      "name": "DavinciService",
       "psm": "game.davinci.rpc",
       "version": "v1",
       "idl": "idl/games/davinci/v1/service.thrift",

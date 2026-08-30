@@ -57,8 +57,8 @@ function visit(filePath, stack = []) {
   }
 }
 
-if (manifest.schemaVersion !== 3) {
-  errors.push('manifest.schemaVersion must be 3');
+if (manifest.schemaVersion !== 4) {
+  errors.push('manifest.schemaVersion must be 4');
 }
 if (!Array.isArray(manifest.services) || manifest.services.length === 0) {
   errors.push('manifest.services must not be empty');
@@ -67,29 +67,31 @@ if (!Array.isArray(manifest.services) || manifest.services.length === 0) {
 for (const service of manifest.services ?? []) {
   const entrypoint = service.entrypoint ?? service.idl;
   const client = service.goClient;
-  if (!service.name || !service.psm || !entrypoint || !service.namespace || !service.version || !service.owner ||
+  const label = service.psm || entrypoint || '<unknown service>';
+  if (Object.prototype.hasOwnProperty.call(service, 'name')) {
+    errors.push(`${label}: manifest name is derived from the Thrift service declaration`);
+  }
+  if (!service.psm || !entrypoint || !service.namespace || !service.version || !service.owner ||
       !client?.module || !client?.repository || !client?.baseRef) {
     errors.push(`invalid manifest service: ${JSON.stringify(service)}`);
     continue;
   }
-  if (serviceNames.has(service.name)) errors.push(`duplicate service name: ${service.name}`);
   if (namespaces.has(service.namespace)) errors.push(`duplicate service namespace: ${service.namespace}`);
   if (psms.has(service.psm)) errors.push(`duplicate service psm: ${service.psm}`);
   if (clientModules.has(client.module)) errors.push(`duplicate Go client module: ${client.module}`);
   if (clientRepositories.has(client.repository)) errors.push(`duplicate Go client repository: ${client.repository}`);
   if (!/^[a-z][a-z0-9_-]*\.[a-z][a-z0-9_-]*\.[a-z][a-z0-9_-]*$/.test(service.psm)) {
-    errors.push(`${service.name}: psm must contain exactly three lower-case segments: ${service.psm}`);
+    errors.push(`${label}: psm must contain exactly three lower-case segments: ${service.psm}`);
   }
   if (!/^[A-Za-z0-9.-]+(?:\/[A-Za-z0-9._-]+)+$/.test(client.module)) {
-    errors.push(`${service.name}: invalid Go client module ${client.module}`);
+    errors.push(`${label}: invalid Go client module ${client.module}`);
   }
   if (!/^[A-Za-z0-9._-]+\/[A-Za-z0-9._-]+$/.test(client.repository)) {
-    errors.push(`${service.name}: invalid Go client repository ${client.repository}`);
+    errors.push(`${label}: invalid Go client repository ${client.repository}`);
   }
   if (!/^[A-Za-z0-9._/-]+$/.test(client.baseRef) || client.baseRef.includes('..')) {
-    errors.push(`${service.name}: invalid Go client baseRef ${client.baseRef}`);
+    errors.push(`${label}: invalid Go client baseRef ${client.baseRef}`);
   }
-  serviceNames.add(service.name);
   namespaces.add(service.namespace);
   psms.add(service.psm);
   clientModules.add(client.module);
@@ -97,22 +99,27 @@ for (const service of manifest.services ?? []) {
 
   const absolute = path.resolve(repositoryRoot, entrypoint);
   if (!fs.existsSync(absolute)) {
-    errors.push(`${service.name}: entrypoint does not exist: ${entrypoint}`);
+    errors.push(`${label}: entrypoint does not exist: ${entrypoint}`);
     continue;
   }
   if (!entrypoint.endsWith(`/${service.version}/service.thrift`)) {
-    errors.push(`${service.name}: entrypoint must end with /${service.version}/service.thrift`);
+    errors.push(`${label}: entrypoint must end with /${service.version}/service.thrift`);
   }
   const source = fs.readFileSync(absolute, 'utf8');
   const namespace = source.match(/^\s*namespace\s+go\s+(\S+)/m)?.[1];
   if (namespace !== service.namespace) {
-    errors.push(`${service.name}: manifest namespace ${service.namespace} != IDL namespace ${namespace}`);
+    errors.push(`${label}: manifest namespace ${service.namespace} != IDL namespace ${namespace}`);
   }
   const declaredServices = Array.from(source.matchAll(/^\s*service\s+(\w+)/gm), match => match[1]);
-  if (declaredServices.length !== 1 || declaredServices[0] !== service.name) {
-    errors.push(`${service.name}: entrypoint must declare exactly that service`);
+  if (declaredServices.length !== 1) {
+    errors.push(`${label}: entrypoint must declare exactly one service`);
+    visit(absolute);
+    continue;
   }
-  const serviceBody = source.match(new RegExp(`service\\s+${service.name}\\s*\\{([\\s\\S]*?)^\\}`, 'm'))?.[1] ?? '';
+  const serviceName = declaredServices[0];
+  if (serviceNames.has(serviceName)) errors.push(`duplicate service name: ${serviceName}`);
+  serviceNames.add(serviceName);
+  const serviceBody = source.match(new RegExp(`service\\s+${serviceName}\\s*\\{([\\s\\S]*?)^\\}`, 'm'))?.[1] ?? '';
   const methodMatches = Array.from(serviceBody.matchAll(
     /^\s*(?:oneway\s+)?[A-Za-z_][\w.<>, ]*\s+(\w+)\s*\([^)]*\)\s*(?:throws\s*\([^)]*\)\s*)?(?:\(|$)/gm,
   ));
@@ -125,20 +132,20 @@ for (const service of manifest.services ?? []) {
     rpcMethodCount += 1;
     if (internal) internalMethodCount += 1;
     if (httpAnnotations.length === 0 && !internal) {
-      errors.push(`${service.name}.${method[1]}: method must declare one HTTP annotation or api.internal = "true"`);
+      errors.push(`${serviceName}.${method[1]}: method must declare one HTTP annotation or api.internal = "true"`);
     }
     if (httpAnnotations.length > 1 || (httpAnnotations.length > 0 && internal)) {
-      errors.push(`${service.name}.${method[1]}: method has conflicting exposure annotations`);
+      errors.push(`${serviceName}.${method[1]}: method has conflicting exposure annotations`);
     }
   }
   for (const match of source.matchAll(/^\s*\S+\s+(\w+)\s*\(\s*\)\s*\(/gm)) {
-    errors.push(`${service.name}.${match[1]}: HTTPThriftGeneric requires at least one argument`);
+    errors.push(`${serviceName}.${match[1]}: HTTPThriftGeneric requires at least one argument`);
   }
   for (const match of source.matchAll(/api\.(get|post|put|patch|delete)\s*=\s*"([^"]+)"/g)) {
     const key = `${match[1].toUpperCase()} ${match[2]}`;
     const owner = routes.get(key);
-    if (owner) errors.push(`HTTP route conflict ${key}: ${owner} and ${service.name}`);
-    routes.set(key, service.name);
+    if (owner) errors.push(`HTTP route conflict ${key}: ${owner} and ${serviceName}`);
+    routes.set(key, serviceName);
   }
   visit(absolute);
 }

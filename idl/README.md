@@ -2,7 +2,10 @@
 
 `manifest.json` is the source of truth for service entrypoints. Every service
 owns one versioned directory and exposes exactly one `service.thrift`.
-Every service also declares a globally unique logical `psm`. Runtime
+The Thrift service name is derived from the single `service` declaration in
+that entrypoint and must not be duplicated in the schema version 4 manifest.
+Every service declares a globally unique logical `psm`, which is the manifest
+identity used for versioning and build association. Runtime
 environments are kept separate by service discovery and are not part of the
 PSM itself.
 
@@ -17,7 +20,6 @@ stores the immutable generation target:
 
 ```json
 {
-  "name": "AuthService",
   "psm": "pam.auth.rpc",
   "idl": "idl/auth/v1/service.thrift",
   "goClient": {
