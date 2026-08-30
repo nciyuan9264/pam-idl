@@ -24,4 +24,11 @@ service OCRBackendService {
     api.summary = "文本对话生成",
     api.content_type = "application/json"
   )
-}
+} (
+  pam.schema_version = "1",
+  pam.psm = "pam.ocr.rpc",
+  pam.description = "OCR Backend 火山方舟 HTTP API IDL",
+  pam.client.go.module = "github.com/nciyuan9264/pam-ocr-client",
+  pam.client.go.repository = "nciyuan9264/pam-ocr-client",
+  pam.client.go.base_ref = "main"
+)

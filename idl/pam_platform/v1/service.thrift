@@ -73,4 +73,11 @@ service PamPlatformService {
   types.StatusResp ReportGatewayStatus(1: required types.ReportGatewayStatusReq req) (
     api.internal = "true"
   )
-}
+} (
+  pam.schema_version = "1",
+  pam.psm = "pam.platform.rpc",
+  pam.description = "PAM 平台 IDL 托管与同步 RPC/HTTP 契约",
+  pam.client.go.module = "github.com/nciyuan9264/pam-platform-client",
+  pam.client.go.repository = "nciyuan9264/pam-platform-client",
+  pam.client.go.base_ref = "main"
+)

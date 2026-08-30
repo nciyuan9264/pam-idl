@@ -69,4 +69,11 @@ service SplendorService {
     api.operation_id = "getLeaderboard",
     api.summary = "查询全玩家排行榜"
   )
-}
+} (
+  pam.schema_version = "1",
+  pam.psm = "game.splendor.rpc",
+  pam.description = "Splendor 游戏房间、历史、回放和排行榜契约",
+  pam.client.go.module = "github.com/nciyuan9264/game-splendor-client",
+  pam.client.go.repository = "nciyuan9264/game-splendor-client",
+  pam.client.go.base_ref = "main"
+)

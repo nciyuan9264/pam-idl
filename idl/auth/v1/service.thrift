@@ -93,4 +93,11 @@ service AuthService {
     api.summary = "获取 JWKS",
     api.auth_required = "false"
   )
-}
+} (
+  pam.schema_version = "1",
+  pam.psm = "pam.auth.rpc",
+  pam.description = "认证中心 Kitex RPC 与 Platform HTTP 契约",
+  pam.client.go.module = "github.com/nciyuan9264/pam-auth-client",
+  pam.client.go.repository = "nciyuan9264/pam-auth-client",
+  pam.client.go.base_ref = "main"
+)

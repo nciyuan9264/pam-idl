@@ -33,4 +33,11 @@ service ReaderService {
     api.summary = "删除图书记录",
     api.auth_required = "true"
   )
-}
+} (
+  pam.schema_version = "1",
+  pam.psm = "pam.reader.rpc",
+  pam.description = "阅读器图书管理 HTTP API IDL",
+  pam.client.go.module = "github.com/nciyuan9264/pam-reader-client",
+  pam.client.go.repository = "nciyuan9264/pam-reader-client",
+  pam.client.go.base_ref = "main"
+)
