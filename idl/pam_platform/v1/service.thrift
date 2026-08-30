@@ -7,7 +7,7 @@ service PamPlatformService {
   types.HealthzResp Healthz(1: types.EmptyReq req) (
     api.get = "/healthz",
     api.operation_id = "healthz",
-    api.summary = "健康检查"
+    api.summary = "检查 PAM Platform 服务状态"
   )
 
   types.SnapshotResp GetSnapshot(1: types.SnapshotReq req) (
