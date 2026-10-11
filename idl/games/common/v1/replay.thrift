@@ -20,7 +20,7 @@ struct Snapshot {
 }
 
 struct SnapshotReq {
-  1: required i64 id (api.path = "id"),
+  1: required i64 id (api.path = "id", api.js_conv = "true"),
   2: optional string game_type (api.query = "game_type"),
   3: optional i32 seq (api.query = "seq"), // 回放到第几步，-1 表示初始状态
 }
@@ -32,7 +32,7 @@ struct SnapshotResp {
 }
 
 struct SnapshotsReq {
-  1: required i64 id (api.path = "id"),
+  1: required i64 id (api.path = "id", api.js_conv = "true"),
 }
 
 struct SnapshotsData {

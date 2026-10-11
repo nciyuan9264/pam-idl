@@ -10,13 +10,6 @@ struct UserIdentity {
   6: optional list<string> roles,
 }
 
-struct TokenPair {
-  1: required string access_token,
-  2: required string refresh_token,
-  3: required i64 access_expires_at_unix,
-  4: required i64 refresh_expires_at_unix,
-}
-
 struct EmptyData {}
 
 struct BaseResp {
@@ -52,17 +45,6 @@ struct LoginByPasswordReq {
 struct LoginByCodeReq {
   1: required string email (api.format = "email"),
   2: required string code,
-}
-
-struct LoginData {
-  1: required UserIdentity user,
-  2: required TokenPair tokens,
-}
-
-struct LoginResp {
-  1: required i32 status_code,
-  2: required string message,
-  3: required LoginData data,
 }
 
 struct VerifyTokenReq {
@@ -170,4 +152,3 @@ exception AuthError {
   1: required string code,
   2: required string message,
 }
-

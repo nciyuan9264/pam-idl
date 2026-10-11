@@ -75,7 +75,7 @@ struct ServiceClientBuildSummary {
 }
 
 struct PipelineRunSummary {
-  1: required i64 id,
+  1: required i64 id (api.js_conv = "true"),
   2: required string eventId,
   3: required string repository,
   4: required string ref,
@@ -143,6 +143,8 @@ struct Endpoint {
   7: required string responseType,
   8: required string contentType,
   9: required bool authRequired,
+  10: optional list<string> authRoles,
+  11: optional bool machineAuthRequired,
 }
 
 struct ServiceSummary {
@@ -259,6 +261,9 @@ struct GatewayConfigReq {
 struct GatewayRoute {
   1: required string method,
   2: required string path,
+  3: optional bool authRequired,
+  4: optional list<string> authRoles,
+  5: optional bool machineAuthRequired,
 }
 
 struct GatewayServiceBinding {

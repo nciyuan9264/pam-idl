@@ -75,9 +75,31 @@ Shared types live at the nearest common ownership boundary. For example,
   `EmptyReq` for routes without request fields.
 - Internal RPC methods use `api.internal = "true"` and must not define a public
   HTTP route.
+- User-facing public methods declare `api.auth_required = "true"` when Gateway
+  must verify the login access token. Public endpoints explicitly use `"false"`.
+- `api.auth_roles` is a comma-separated list and is valid only when
+  `api.auth_required = "true"`; every listed role is required by the RPC
+  server middleware after Gateway forwards verified user identity.
+- Machine-token public methods declare `api.auth_required = "false"` and
+  `api.machine_auth_required = "true"`. Gateway forwards the Bearer token as
+  `x-pam-machine-token`; the target RPC Handler validates it.
+- `api.auth_required` and `api.machine_auth_required` cannot both be `"true"`.
+- Public methods use exactly one of `api.get`, `api.post`, `api.put`,
+  `api.patch`, or `api.delete`.
+- Request fields may use `api.path`, `api.query`, `api.body`, `api.form`, or
+  `api.none`. Browser Cookie and arbitrary Header forwarding are not part of
+  the PAM Gateway contract.
+- Every ID-like `i64` field whose name ends in `id` (case-insensitive) declares
+  `api.js_conv = "true"` so JavaScript clients receive a lossless string.
+- A multipart file uses `binary (api.form = "<field>")`. Each field accepts one
+  file and must not also contain a text value.
+- Response Cookie, allowlisted Header, and final HTTP status overrides use
+  `pam-protocol/httpmeta`; response `api.raw_body` is not supported with the
+  pinned Kitex/DynamicGo version.
 
 Validate the complete IDL repository with:
 
 ```bash
+node --test scripts/validator.test.js
 node scripts/validate.js
 ```

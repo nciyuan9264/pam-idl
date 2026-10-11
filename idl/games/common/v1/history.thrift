@@ -4,9 +4,9 @@ namespace js pam.games.common.v1
 // 历史对局公共契约。仅放置所有游戏语义与字段编号一致的结构。
 
 struct HistoryGamePlayer {
-  1: required i64 id,
-  2: required i64 gameID,
-  3: optional i64 userID,       // AI 为空
+  1: required i64 id (api.js_conv = "true"),
+  2: required i64 gameID (api.js_conv = "true"),
+  3: optional i64 userID (api.js_conv = "true"), // AI 为空
   4: required string playerID,
   5: required i32 seatIndex,
   6: required bool isAI,
@@ -19,13 +19,13 @@ struct HistoryGamePlayer {
 }
 
 struct HistoryGame {
-  1: required i64 id,
+  1: required i64 id (api.js_conv = "true"),
   2: required string roomID,
   3: required string gameType,
   4: required string startedAt,
   5: optional string endedAt,
   6: required i32 durationSeconds,
-  7: optional i64 winnerUserID,
+  7: optional i64 winnerUserID (api.js_conv = "true"),
   8: optional string winnerPlayerID,
   9: optional string endReason,
   10: required i32 maxPlayers,
@@ -66,7 +66,7 @@ struct HistoryListResp {
 }
 
 struct HistoryDetailReq {
-  1: required i64 id (api.path = "id"),
+  1: required i64 id (api.path = "id", api.js_conv = "true"),
   2: optional string game_type (api.query = "game_type"),
 }
 

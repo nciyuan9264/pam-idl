@@ -67,7 +67,8 @@ service SplendorService {
   leaderboard.LeaderboardResp GetLeaderboard(1: leaderboard.LeaderboardReq req) (
     api.get = "/api/splendor/ranking/leaderboard",
     api.operation_id = "getLeaderboard",
-    api.summary = "查询全玩家排行榜"
+    api.summary = "查询全玩家排行榜",
+    api.auth_required = "false"
   )
 } (
   pam.schema_version = "1",

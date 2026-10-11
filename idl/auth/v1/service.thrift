@@ -18,21 +18,21 @@ service AuthService {
     api.auth_required = "false"
   )
 
-  types.LoginResp LoginByPassword(1: required types.LoginByPasswordReq req) throws (1: types.AuthError err) (
+  types.UserResp LoginByPassword(1: required types.LoginByPasswordReq req) throws (1: types.AuthError err) (
     api.post = "/platform/auth/login/password",
     api.operation_id = "loginByPassword",
     api.summary = "密码登录",
     api.auth_required = "false"
   )
 
-  types.LoginResp LoginByCode(1: required types.LoginByCodeReq req) throws (1: types.AuthError err) (
+  types.UserResp LoginByCode(1: required types.LoginByCodeReq req) throws (1: types.AuthError err) (
     api.post = "/platform/auth/verify-code",
     api.operation_id = "verifyCode",
     api.summary = "验证验证码并登录",
     api.auth_required = "false"
   )
 
-  types.LoginResp RefreshToken(1: required types.RefreshTokenReq req) throws (1: types.AuthError err) (
+  types.UserResp RefreshToken(1: required types.RefreshTokenReq req) throws (1: types.AuthError err) (
     api.post = "/platform/auth/refresh",
     api.operation_id = "refresh",
     api.summary = "刷新 token",

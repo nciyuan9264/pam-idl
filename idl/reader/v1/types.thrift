@@ -2,7 +2,7 @@ namespace go pam.reader.v1
 namespace js pam.reader.v1
 
 struct Novel {
-  1: optional i64 id,
+  1: optional i64 id (api.js_conv = "true"),
   2: optional string title,
   3: optional string main_category,
   4: optional string sub_category,
@@ -23,7 +23,7 @@ struct CreateBookReq {
 }
 
 struct UpdateBookReq {
-  1: required i64 id,
+  1: required i64 id (api.js_conv = "true"),
   2: optional string title,
   3: optional string main_category,
   4: optional string sub_category,
@@ -34,7 +34,7 @@ struct UpdateBookReq {
 }
 
 struct DeleteBookReq {
-  1: required i64 id (api.query = "id"),
+  1: required i64 id (api.query = "id", api.js_conv = "true"),
 }
 
 struct ListBooksReq {
@@ -65,4 +65,3 @@ struct ListBooksResp {
   6: required i32 page_size,
   7: required i32 total_pages,
 }
-

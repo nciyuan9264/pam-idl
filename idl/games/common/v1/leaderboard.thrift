@@ -4,7 +4,7 @@ namespace js pam.games.common.v1
 // 排行榜公共契约。仅放置所有游戏语义与字段编号一致的结构。
 
 struct LeaderboardEntry {
-  1: required i64 userID,
+  1: required i64 userID (api.js_conv = "true"),
   2: required string playerID,
   3: required i32 totalGames,
   4: optional i32 wins,

@@ -8,21 +8,24 @@ service OCRBackendService {
     api.post = "/ai/ocr",
     api.operation_id = "ocr",
     api.summary = "图片 OCR 识别",
-    api.content_type = "application/json"
+    api.content_type = "application/json",
+    api.auth_required = "false"
   )
 
   types.ArkImageGenerationResp GenerateImage(1: required types.GenerateImageReq req) (
     api.post = "/ai/generate",
     api.operation_id = "generateImage",
     api.summary = "根据提示词生成图片",
-    api.content_type = "application/json"
+    api.content_type = "application/json",
+    api.auth_required = "false"
   )
 
   types.ArkChatCompletionResp Chat(1: required types.ChatReq req) (
     api.post = "/ai/chat",
     api.operation_id = "chat",
     api.summary = "文本对话生成",
-    api.content_type = "application/json"
+    api.content_type = "application/json",
+    api.auth_required = "false"
   )
 } (
   pam.schema_version = "1",
