@@ -37,6 +37,25 @@ struct SendCodeResp {
   3: optional SendCodeData data,
 }
 
+struct LoginShowcaseReq {}
+
+struct LoginShowcasePlayer {
+  1: required string avatar,
+}
+
+struct LoginShowcaseData {
+  1: required i64 total_players,
+  // Number of players created during the previous seven days.
+  2: required i64 newly_joined_players,
+  3: required list<LoginShowcasePlayer> recent_players,
+}
+
+struct LoginShowcaseResp {
+  1: required i32 status_code,
+  2: required string message,
+  3: required LoginShowcaseData data,
+}
+
 struct LoginByPasswordReq {
   1: required string email (api.format = "email"),
   2: required string password,
@@ -83,6 +102,7 @@ struct UserResp {
   1: required i32 status_code,
   2: required string message,
   3: required UserIdentity data,
+  4: optional bool needs_onboarding,
 }
 
 struct UpdateUserReq {

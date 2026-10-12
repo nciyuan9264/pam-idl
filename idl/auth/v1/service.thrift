@@ -18,6 +18,13 @@ service AuthService {
     api.auth_required = "false"
   )
 
+  types.LoginShowcaseResp GetLoginShowcase(1: required types.LoginShowcaseReq req) throws (1: types.AuthError err) (
+    api.get = "/platform/auth/showcase",
+    api.operation_id = "getLoginShowcase",
+    api.summary = "获取登录页公开玩家数据",
+    api.auth_required = "false"
+  )
+
   types.UserResp LoginByPassword(1: required types.LoginByPasswordReq req) throws (1: types.AuthError err) (
     api.post = "/platform/auth/login/password",
     api.operation_id = "loginByPassword",
