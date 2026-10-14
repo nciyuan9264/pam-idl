@@ -82,6 +82,62 @@ service AuthService {
     api.content_type = "multipart/form-data"
   )
 
+  types.ListPasskeysResp ListPasskeys(1: required types.ListPasskeysReq req) throws (1: types.AuthError err) (
+    api.get = "/platform/auth/passkeys",
+    api.operation_id = "listPasskeys",
+    api.summary = "列出当前账号通行密钥",
+    api.auth_required = "true"
+  )
+
+  types.PasskeyManagementCodeResp SendPasskeyManagementCode(1: required types.SendPasskeyManagementCodeReq req) throws (1: types.AuthError err) (
+    api.post = "/platform/auth/passkeys/management-code",
+    api.operation_id = "sendPasskeyManagementCode",
+    api.summary = "发送通行密钥管理验证码",
+    api.auth_required = "true"
+  )
+
+  types.PasskeyCeremonyResp BeginPasskeyRegistration(1: required types.BeginPasskeyRegistrationReq req) throws (1: types.AuthError err) (
+    api.post = "/platform/auth/passkeys/register/options",
+    api.operation_id = "beginPasskeyRegistration",
+    api.summary = "验证邮箱并开始创建通行密钥",
+    api.auth_required = "true"
+  )
+
+  types.PasskeyResp FinishPasskeyRegistration(1: required types.FinishPasskeyRegistrationReq req) throws (1: types.AuthError err) (
+    api.post = "/platform/auth/passkeys/register/verify",
+    api.operation_id = "finishPasskeyRegistration",
+    api.summary = "验证并保存通行密钥",
+    api.auth_required = "true"
+  )
+
+  types.PasskeyCeremonyResp BeginPasskeyLogin(1: required types.BeginPasskeyLoginReq req) throws (1: types.AuthError err) (
+    api.post = "/platform/auth/passkeys/login/options",
+    api.operation_id = "beginPasskeyLogin",
+    api.summary = "开始无邮箱通行密钥登录",
+    api.auth_required = "false"
+  )
+
+  types.UserResp FinishPasskeyLogin(1: required types.FinishPasskeyLoginReq req) throws (1: types.AuthError err) (
+    api.post = "/platform/auth/passkeys/login/verify",
+    api.operation_id = "finishPasskeyLogin",
+    api.summary = "验证通行密钥并登录",
+    api.auth_required = "false"
+  )
+
+  types.PasskeyResp RenamePasskey(1: required types.RenamePasskeyReq req) throws (1: types.AuthError err) (
+    api.patch = "/platform/auth/passkeys/:passkey_id",
+    api.operation_id = "renamePasskey",
+    api.summary = "重命名通行密钥备注",
+    api.auth_required = "true"
+  )
+
+  types.BaseResp DeletePasskey(1: required types.DeletePasskeyReq req) throws (1: types.AuthError err) (
+    api.post = "/platform/auth/passkeys/:passkey_id/delete",
+    api.operation_id = "deletePasskey",
+    api.summary = "验证邮箱并撤销通行密钥",
+    api.auth_required = "true"
+  )
+
   types.UserResp GetUser(1: required types.GetUserReq req) throws (1: types.AuthError err) (
     api.internal = "true",
     api.auth_required = "true",

@@ -168,6 +168,98 @@ struct JWKSResp {
   3: required JWKSData data,
 }
 
+struct PasskeyRecord {
+  1: required string passkey_id,
+  2: required string name,
+  3: required i64 created_at_unix,
+  4: optional i64 last_used_at_unix,
+  5: optional bool backup_eligible,
+  6: optional bool backed_up,
+}
+
+struct ListPasskeysReq {}
+
+struct ListPasskeysData {
+  1: required bool enabled,
+  2: required string rp_id,
+  3: required i32 max_passkeys,
+  4: required list<PasskeyRecord> passkeys,
+}
+
+struct ListPasskeysResp {
+  1: required i32 status_code,
+  2: required string message,
+  3: required ListPasskeysData data,
+}
+
+struct SendPasskeyManagementCodeReq {
+  1: required string purpose (api.body = "purpose"),
+  2: optional string passkey_id (api.body = "passkey_id"),
+}
+
+struct PasskeyManagementCodeData {
+  1: required string operation_id,
+  2: required i64 expires_at_unix,
+  3: required i32 resend_after_seconds,
+}
+
+struct PasskeyManagementCodeResp {
+  1: required i32 status_code,
+  2: required string message,
+  3: required PasskeyManagementCodeData data,
+}
+
+struct BeginPasskeyRegistrationReq {
+  1: required string operation_id (api.body = "operation_id"),
+  2: required string code (api.body = "code"),
+  3: required string name (api.body = "name"),
+}
+
+struct PasskeyCeremonyData {
+  1: required string ceremony_id,
+  2: required string public_key_options_json,
+  3: required i64 expires_at_unix,
+}
+
+struct PasskeyCeremonyResp {
+  1: required i32 status_code,
+  2: required string message,
+  3: required PasskeyCeremonyData data,
+}
+
+struct FinishPasskeyRegistrationReq {
+  1: required string ceremony_id (api.body = "ceremony_id"),
+  2: required string credential_json (api.body = "credential_json"),
+}
+
+struct PasskeyData {
+  1: required PasskeyRecord passkey,
+}
+
+struct PasskeyResp {
+  1: required i32 status_code,
+  2: required string message,
+  3: required PasskeyData data,
+}
+
+struct BeginPasskeyLoginReq {}
+
+struct FinishPasskeyLoginReq {
+  1: required string ceremony_id (api.body = "ceremony_id"),
+  2: required string credential_json (api.body = "credential_json"),
+}
+
+struct RenamePasskeyReq {
+  1: required string passkey_id (api.path = "passkey_id"),
+  2: required string name (api.body = "name"),
+}
+
+struct DeletePasskeyReq {
+  1: required string passkey_id (api.path = "passkey_id"),
+  2: required string operation_id (api.body = "operation_id"),
+  3: required string code (api.body = "code"),
+}
+
 exception AuthError {
   1: required string code,
   2: required string message,
