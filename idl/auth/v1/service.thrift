@@ -18,6 +18,13 @@ service AuthService {
     api.auth_required = "false"
   )
 
+  types.EmailDeliveryStatusResp GetEmailDeliveryStatus(1: required types.GetEmailDeliveryStatusReq req) throws (1: types.AuthError err) (
+    api.get = "/platform/auth/email-deliveries/:delivery_id",
+    api.operation_id = "getEmailDeliveryStatus",
+    api.summary = "查询验证码邮件投递状态",
+    api.auth_required = "false"
+  )
+
   types.LoginShowcaseResp GetLoginShowcase(1: required types.LoginShowcaseReq req) throws (1: types.AuthError err) (
     api.get = "/platform/auth/showcase",
     api.operation_id = "getLoginShowcase",

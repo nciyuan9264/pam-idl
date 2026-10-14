@@ -29,12 +29,30 @@ struct SendCodeReq {
 
 struct SendCodeData {
   1: optional string dev_code,
+  2: optional string delivery_id,
+  3: optional string delivery_status,
+  4: optional i32 poll_after_ms,
 }
 
 struct SendCodeResp {
   1: required i32 status_code,
   2: required string message,
   3: optional SendCodeData data,
+}
+
+struct GetEmailDeliveryStatusReq {
+  1: required string delivery_id (api.path = "delivery_id"),
+}
+
+struct EmailDeliveryStatusData {
+  1: required string delivery_id,
+  2: required string status,
+}
+
+struct EmailDeliveryStatusResp {
+  1: required i32 status_code,
+  2: required string message,
+  3: required EmailDeliveryStatusData data,
 }
 
 struct LoginShowcaseReq {}
