@@ -91,6 +91,8 @@ struct VerifyTokenReq {
 
 struct VerifyTokenData {
   1: required bool valid,
+  // Lightweight authenticated principal. Only user_id and roles are guaranteed.
+  // Call GetProfile when email, name, display_name, or avatar is required.
   2: optional UserIdentity user,
   3: optional string token_id,
   4: optional i64 expires_at_unix,
