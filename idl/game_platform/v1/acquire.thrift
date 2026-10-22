@@ -82,11 +82,22 @@ struct AcquireRoomView {
   7: optional map<string, AcquirePlayerResult> result,
 }
 
+struct AcquireReplayRoomData {
+  1: required map<string, AcquireCompanyState> companyInfo,
+  2: required string currentPlayer,
+  3: required string gameStatus,
+  4: required map<string, AcquireTile> tiles,
+  5: required map<string, room.RoomPlayer> players,
+  6: optional AcquireEndGameState endGame,
+}
+
 struct AcquireReplaySnapshot {
   1: required i32 seq,
   2: required i32 totalEvents,
   3: optional types.ReplayEvent currentEvent,
-  4: required AcquireRoomView view,
+  4: required AcquireReplayRoomData roomData,
+  5: required map<string, AcquirePlayerState> playersData,
+  6: required map<string, AcquirePlayerResult> result,
 }
 
 struct AcquirePlaceTilePayload {

@@ -63,11 +63,24 @@ struct SplendorRoomView {
   6: optional map<string, SplendorPlayerResult> result,
 }
 
+struct SplendorReplayRoomData {
+  1: required map<string, SplendorDevelopmentCard> normalCards,
+  2: required map<string, SplendorNoble> nobleCards,
+  3: required map<string, i32> deckCounts,
+  4: required map<string, i32> gems,
+  5: required string currentPlayer,
+  6: required string gameStatus,
+  7: optional SplendorLastAction lastData,
+  8: required map<string, room.RoomPlayer> players,
+}
+
 struct SplendorReplaySnapshot {
   1: required i32 seq,
   2: required i32 totalEvents,
   3: optional types.ReplayEvent currentEvent,
-  4: required SplendorRoomView view,
+  4: required SplendorReplayRoomData roomData,
+  5: required map<string, SplendorPlayerState> playersData,
+  6: required map<string, SplendorPlayerResult> result,
 }
 
 struct SplendorGetGemPayload {

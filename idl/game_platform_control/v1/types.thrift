@@ -17,6 +17,7 @@ struct RoomRecord {
   13: optional i64 lease_expires_at_unix,
   14: optional string current_match_id,
   15: required i32 next_round_no,
+  16: optional string visibility,
 }
 
 struct CreateRoomReq {
@@ -25,6 +26,7 @@ struct CreateRoomReq {
   3: required string owner_player_id,
   4: optional i32 max_players,
   5: optional string request_id,
+  6: optional string visibility,
 }
 
 struct CreateRoomResp {
