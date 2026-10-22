@@ -281,7 +281,11 @@ function validateRepository(root = path.resolve(__dirname, '..')) {
       errors.push(`${relativeToRepository(file)}: expected exactly one Go namespace`);
       continue;
     }
-    for (const match of source.matchAll(/^\s*(?:struct|enum|union|exception|typedef|service)\s+(\w+)/gm)) {
+    const namedDefinitions = [
+      ...source.matchAll(/^\s*(?:struct|enum|union|exception|service)\s+(\w+)/gm),
+      ...source.matchAll(/^\s*typedef\s+[A-Za-z_][\w.<>, ]*\s+(\w+)(?:\s*\([^)]*\))?\s*$/gm),
+    ];
+    for (const match of namedDefinitions) {
       const key = `${goNamespaces[0]}.${match[1]}`;
       const previous = definitions.get(key);
       if (previous) {

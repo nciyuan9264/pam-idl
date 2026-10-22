@@ -43,6 +43,20 @@ struct Request {
   assert.deepEqual(result.errors, []);
 });
 
+test('validates typedef names instead of primitive targets', t => {
+  const root = repository(t, `
+typedef string GameType
+typedef string Visibility
+
+struct Request {
+  1: required GameType game_type,
+  2: required Visibility visibility,
+}
+`);
+  const result = validateRepository(root);
+  assert.deepEqual(result.errors, []);
+});
+
 function repository(t, requestFields) {
   const root = fs.mkdtempSync(path.join(os.tmpdir(), 'pam-idl-validator-'));
   t.after(() => fs.rmSync(root, { recursive: true, force: true }));

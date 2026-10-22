@@ -43,8 +43,30 @@ path declared by the service annotation.
 └── types.thrift    # service-owned structs, enums, unions and exceptions
 ```
 
-Shared types live at the nearest common ownership boundary. For example,
-`games/common/v1` is shared by game services but is not a platform-wide API.
+Shared types live at the nearest common ownership boundary. The unified game
+platform keeps its room, history and realtime types beside its service instead
+of exposing per-game public services.
+
+The game backend is exposed as one platform service:
+
+```text
+game_platform/v1/
+├── service.thrift
+├── types.thrift
+├── room.thrift
+├── history.thrift
+├── realtime.thrift
+├── acquire.thrift
+├── davinci.thrift
+└── splendor.thrift
+```
+
+`GamePlatformService` owns player-facing room, history, replay, statistics and
+leaderboard HTTP routes under `/platform/*` and uses PSM `game.platform.rpc`.
+Every cross-game request carries an explicit `gameType`; implementations and
+generated clients must not default it internally. Realtime WebSocket traffic
+does not pass through PAM Gateway, but its v2 command and message types live in
+the same IDL so browser and server transports share one contract.
 
 ## Versioning
 

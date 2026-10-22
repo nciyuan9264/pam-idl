@@ -1,0 +1,109 @@
+namespace go pam.game.platform.v1
+namespace js pam.game.platform.v1
+
+include "types.thrift"
+include "room.thrift"
+include "acquire.thrift"
+include "davinci.thrift"
+include "splendor.thrift"
+
+struct MatchReadyPayload {
+  1: required bool ready,
+}
+
+struct MatchSeatPayload {
+  1: optional i32 seatIndex,
+}
+
+struct MatchRemovePlayerPayload {
+  1: required string playerID,
+}
+
+struct RoomUpdateSettingsPayload {
+  1: required types.Visibility visibility,
+}
+
+union CommonCommandPayload {
+  1: MatchReadyPayload matchReady,
+  2: MatchSeatPayload matchSeat,
+  3: MatchRemovePlayerPayload removePlayer,
+  4: RoomUpdateSettingsPayload roomSettings,
+  5: types.EmptyPayload empty,
+}
+
+union ClientCommandPayload {
+  1: CommonCommandPayload common,
+  2: acquire.AcquireCommandPayload acquire,
+  3: davinci.DavinciCommandPayload davinci,
+  4: splendor.SplendorCommandPayload splendor,
+}
+
+struct ClientCommand {
+  1: required i32 schemaVersion,
+  2: required string commandID,
+  3: required string matchID,
+  4: required types.CommandType type,
+  5: required ClientCommandPayload payload,
+}
+
+struct MatchSync {
+  1: required i32 schemaVersion,
+  2: required string type,
+  3: required string roomID,
+  4: required string matchID,
+  5: required i64 seq,
+  6: required string ownerID,
+  7: required string status,
+  8: required string playerID,
+  9: required types.Visibility visibility,
+  10: required i32 maxPlayers,
+  11: required map<string, room.RoomPlayer> players,
+  12: required list<string> playerOrder,
+}
+
+union RoomView {
+  1: acquire.AcquireRoomView acquire,
+  2: davinci.DavinciRoomView davinci,
+  3: splendor.SplendorRoomView splendor,
+}
+
+struct RoomSync {
+  1: required i32 schemaVersion,
+  2: required string type,
+  3: required string roomID,
+  4: required string matchID,
+  5: required i64 seq,
+  6: required RoomView view,
+  7: optional list<types.RealtimeEffect> effects,
+}
+
+struct CommandResult {
+  1: required i32 schemaVersion,
+  2: required string type,
+  3: required string roomID,
+  4: required string matchID,
+  5: required i64 seq,
+  6: required string commandID,
+  7: required bool accepted,
+  8: optional string errorCode,
+  9: optional string message,
+  10: optional bool retryable,
+}
+
+struct ErrorMessage {
+  1: required i32 schemaVersion,
+  2: required string type,
+  3: required string roomID,
+  4: required string matchID,
+  5: required i64 seq,
+  6: optional string commandID,
+  7: required string code,
+  8: required string message,
+}
+
+union ServerMessage {
+  1: MatchSync matchSync,
+  2: RoomSync roomSync,
+  3: CommandResult commandResult,
+  4: ErrorMessage error,
+}
