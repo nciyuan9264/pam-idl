@@ -38,6 +38,7 @@ struct DavinciRoomData {
 struct DavinciCardData {
   1: required list<DavinciCard> self,
   2: required list<DavinciCard> opponents,
+  3: optional bool initialHandReady,
 }
 
 struct DavinciResult {
@@ -66,8 +67,18 @@ struct DavinciSetCardPayload {
   2: required i32 index,
 }
 
+struct DavinciJokerPlacement {
+  1: required string id,
+  2: required i32 index,
+}
+
+struct DavinciInitializeHandPayload {
+  1: required list<DavinciJokerPlacement> jokerPlacements,
+}
+
 union DavinciCommandPayload {
   1: DavinciGetCardPayload getCard,
   2: DavinciGuessCardPayload guessCard,
   3: DavinciSetCardPayload setCard,
+  4: DavinciInitializeHandPayload initializeHand,
 }
