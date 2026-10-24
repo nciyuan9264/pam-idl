@@ -151,6 +151,11 @@ service AuthService {
     api.auth_roles = "admin"
   )
 
+  types.BatchGetPublicProfilesResp BatchGetPublicProfiles(1: required types.BatchGetPublicProfilesReq req) throws (1: types.AuthError err) (
+    api.internal = "true",
+    api.auth_required = "false"
+  )
+
   types.ListUsersResp ListUsers(1: required types.ListUsersReq req) throws (1: types.AuthError err) (
     api.internal = "true",
     api.auth_required = "true",

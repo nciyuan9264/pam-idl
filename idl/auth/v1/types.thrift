@@ -154,6 +154,25 @@ struct GetUserReq {
   1: required string user_id,
 }
 
+struct PublicUserProfile {
+  1: required string user_id,
+  2: required string display_name,
+}
+
+struct BatchGetPublicProfilesReq {
+  1: required list<string> user_ids,
+}
+
+struct BatchGetPublicProfilesData {
+  1: required list<PublicUserProfile> profiles,
+}
+
+struct BatchGetPublicProfilesResp {
+  1: required i32 status_code,
+  2: required string message,
+  3: required BatchGetPublicProfilesData data,
+}
+
 struct AuthUserRecord {
   1: required UserIdentity identity,
   2: required i64 created_at_unix,

@@ -26,6 +26,7 @@ struct ReplayEvent {
   2: required string playerID,
   3: required string cmdType,
   4: optional string payloadJSON,
+  5: optional string displayName,
 }
 
 exception GamePlatformError {

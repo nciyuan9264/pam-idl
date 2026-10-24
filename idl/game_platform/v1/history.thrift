@@ -18,6 +18,7 @@ struct HistoryGamePlayer {
   10: optional i32 finalRank,
   11: required bool isWinner,
   12: required types.ISODateTime createdAt,
+  13: optional string displayName,
 }
 
 struct HistoryGame {
@@ -40,6 +41,7 @@ struct HistoryEventMeta {
   1: required i32 seq,
   2: required string playerID,
   3: required string cmdType,
+  4: optional string displayName,
 }
 
 struct HistoryStats {
@@ -68,6 +70,7 @@ struct LeaderboardEntry {
   2: required string playerID,
   3: required i32 totalGames,
   4: required LeaderboardMetric metric,
+  5: optional string displayName,
 }
 
 union ReplaySnapshot {
