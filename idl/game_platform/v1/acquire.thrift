@@ -64,6 +64,7 @@ struct AcquireTempData {
   2: required map<string, AcquireSettleData> mergeSettleData,
   3: required string merge_main_company_temp,
   4: required AcquireMergingSelection merge_selection_temp,
+  5: optional string merge_settle_current_player,
 }
 
 struct AcquirePlayerResult {
