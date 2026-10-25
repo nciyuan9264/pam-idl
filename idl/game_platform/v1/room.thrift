@@ -38,11 +38,18 @@ struct YinshRoomMetrics {
   3: required i32 progressTotal,
 }
 
+struct OthelloRoomMetrics {
+  1: required i32 occupiedCount,
+  2: required i32 progressCurrent,
+  3: required i32 progressTotal,
+}
+
 union RoomMetrics {
   1: AcquireRoomMetrics acquire,
   2: DavinciRoomMetrics davinci,
   3: SplendorRoomMetrics splendor,
   4: YinshRoomMetrics yinsh,
+  5: OthelloRoomMetrics othello,
 }
 
 struct RoomInfo {
