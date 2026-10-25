@@ -21,6 +21,7 @@ struct HistoryGamePlayer {
   11: required bool isWinner,
   12: required types.ISODateTime createdAt,
   13: optional string displayName,
+  14: optional string gameRole,
 }
 
 struct HistoryGame {
@@ -37,6 +38,7 @@ struct HistoryGame {
   11: required types.ISODateTime createdAt,
   12: required types.ISODateTime updatedAt,
   13: optional list<HistoryGamePlayer> players,
+  14: optional string roomDisplayName,
 }
 
 struct HistoryEventMeta {
@@ -51,6 +53,8 @@ struct HistoryStats {
   2: required i32 wins,
   3: required double winRate,
   4: required double avgScore,
+  5: optional map<string, i32> gamesByRole,
+  6: optional map<string, i32> winsByRole,
 }
 
 struct DavinciLeaderboardMetric {
@@ -72,11 +76,17 @@ struct OthelloLeaderboardMetric {
   2: required double winRate,
 }
 
+struct FugitiveLeaderboardMetric {
+  1: required i32 wins,
+  2: required double winRate,
+}
+
 union LeaderboardMetric {
   1: DavinciLeaderboardMetric davinci,
   2: RankLeaderboardMetric rank,
   3: YinshLeaderboardMetric yinsh,
   4: OthelloLeaderboardMetric othello,
+  5: FugitiveLeaderboardMetric fugitive,
 }
 
 struct LeaderboardEntry {
@@ -127,6 +137,7 @@ struct GetLeaderboardReq {
   2: optional string sort (api.query = "sort"),
   3: optional i32 limit (api.query = "limit"),
   4: optional i32 offset (api.query = "offset"),
+  5: optional string game_role (api.query = "gameRole"),
 }
 
 struct HistoryListData {

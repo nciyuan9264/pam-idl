@@ -8,6 +8,7 @@ include "davinci.thrift"
 include "splendor.thrift"
 include "yinsh.thrift"
 include "othello.thrift"
+include "fugitive.thrift"
 
 struct MatchReadyPayload {
   1: required bool ready,
@@ -23,6 +24,8 @@ struct MatchRemovePlayerPayload {
 
 struct RoomUpdateSettingsPayload {
   1: required types.Visibility visibility,
+  2: optional string displayName,
+  3: optional i32 turnTimeoutSeconds,
 }
 
 union CommonCommandPayload {
@@ -40,6 +43,7 @@ union ClientCommandPayload {
   4: splendor.SplendorCommandPayload splendor,
   5: yinsh.YinshCommandPayload yinsh,
   6: othello.OthelloCommandPayload othello,
+  7: fugitive.FugitiveCommandPayload fugitive,
 }
 
 struct ClientCommand {
@@ -71,6 +75,7 @@ union RoomView {
   3: splendor.SplendorRoomView splendor,
   4: yinsh.YinshRoomView yinsh,
   5: othello.OthelloRoomView othello,
+  6: fugitive.FugitiveRoomView fugitive,
 }
 
 struct RoomSync {

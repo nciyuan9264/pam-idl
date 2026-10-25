@@ -12,6 +12,7 @@ struct RoomPlayer {
   6: required bool online,
   7: required bool ai,
   8: required bool ready,
+  9: optional string gameRole,
 }
 
 struct AcquireRoomMetrics {
@@ -44,12 +45,20 @@ struct OthelloRoomMetrics {
   3: required i32 progressTotal,
 }
 
+struct FugitiveRoomMetrics {
+  1: required i32 highestRevealed,
+  2: required i32 hiddenHideoutCount,
+  3: required i32 progressCurrent,
+  4: required i32 progressTotal,
+}
+
 union RoomMetrics {
   1: AcquireRoomMetrics acquire,
   2: DavinciRoomMetrics davinci,
   3: SplendorRoomMetrics splendor,
   4: YinshRoomMetrics yinsh,
   5: OthelloRoomMetrics othello,
+  6: FugitiveRoomMetrics fugitive,
 }
 
 struct RoomInfo {
@@ -68,6 +77,8 @@ struct RoomInfo {
   13: required types.ISODateTime updatedAt,
   14: required list<RoomPlayer> players,
   15: required RoomMetrics metrics,
+  16: optional string displayName,
+  17: optional i32 turnTimeoutSeconds,
 }
 
 struct CreateRoomReq {
@@ -75,6 +86,8 @@ struct CreateRoomReq {
   2: optional types.Visibility visibility (api.body = "visibility"),
   3: optional i32 max_players (api.body = "maxPlayers"),
   4: required string request_id (api.body = "requestID"),
+  5: optional string display_name (api.body = "displayName"),
+  6: optional i32 turn_timeout_seconds (api.body = "turnTimeoutSeconds"),
 }
 
 struct ListRoomsReq {

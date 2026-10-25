@@ -18,6 +18,8 @@ struct RoomRecord {
   14: optional string current_match_id,
   15: required i32 next_round_no,
   16: optional string visibility,
+  17: optional string display_name,
+  18: optional i32 turn_timeout_seconds,
 }
 
 struct CreateRoomReq {
@@ -27,6 +29,8 @@ struct CreateRoomReq {
   4: optional i32 max_players,
   5: optional string request_id,
   6: optional string visibility,
+  7: optional string display_name,
+  8: optional i32 turn_timeout_seconds,
 }
 
 struct CreateRoomResp {
