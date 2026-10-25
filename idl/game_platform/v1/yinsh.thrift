@@ -45,6 +45,7 @@ struct YinshRoomData {
   14: required map<string, room.RoomPlayer> players,
   15: required list<string> playerOrder,
   16: required i32 roundNo,
+  17: optional list<YinshLastAction> activity,
 }
 
 struct YinshResult {
