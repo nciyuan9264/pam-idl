@@ -32,10 +32,17 @@ struct SplendorRoomMetrics {
   3: required i32 progressTotal,
 }
 
+struct YinshRoomMetrics {
+  1: required i32 ringsRemoved,
+  2: required i32 progressCurrent,
+  3: required i32 progressTotal,
+}
+
 union RoomMetrics {
   1: AcquireRoomMetrics acquire,
   2: DavinciRoomMetrics davinci,
   3: SplendorRoomMetrics splendor,
+  4: YinshRoomMetrics yinsh,
 }
 
 struct RoomInfo {

@@ -58,7 +58,8 @@ game_platform/v1/
 ├── realtime.thrift
 ├── acquire.thrift
 ├── davinci.thrift
-└── splendor.thrift
+├── splendor.thrift
+└── yinsh.thrift
 ```
 
 `GamePlatformService` owns player-facing room, history, replay, statistics and

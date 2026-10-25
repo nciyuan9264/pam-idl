@@ -6,6 +6,7 @@ include "room.thrift"
 include "acquire.thrift"
 include "davinci.thrift"
 include "splendor.thrift"
+include "yinsh.thrift"
 
 struct MatchReadyPayload {
   1: required bool ready,
@@ -36,6 +37,7 @@ union ClientCommandPayload {
   2: acquire.AcquireCommandPayload acquire,
   3: davinci.DavinciCommandPayload davinci,
   4: splendor.SplendorCommandPayload splendor,
+  5: yinsh.YinshCommandPayload yinsh,
 }
 
 struct ClientCommand {
@@ -65,6 +67,7 @@ union RoomView {
   1: acquire.AcquireRoomView acquire,
   2: davinci.DavinciRoomView davinci,
   3: splendor.SplendorRoomView splendor,
+  4: yinsh.YinshRoomView yinsh,
 }
 
 struct RoomSync {
