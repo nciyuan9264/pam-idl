@@ -52,6 +52,12 @@ struct FugitiveRoomMetrics {
   4: required i32 progressTotal,
 }
 
+struct WarChestRoomMetrics {
+  1: required i32 maxControlledLocations,
+  2: required i32 progressCurrent,
+  3: required i32 progressTotal,
+}
+
 union RoomMetrics {
   1: AcquireRoomMetrics acquire,
   2: DavinciRoomMetrics davinci,
@@ -59,6 +65,7 @@ union RoomMetrics {
   4: YinshRoomMetrics yinsh,
   5: OthelloRoomMetrics othello,
   6: FugitiveRoomMetrics fugitive,
+  7: WarChestRoomMetrics warchest,
 }
 
 struct RoomInfo {

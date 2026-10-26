@@ -9,6 +9,7 @@ include "splendor.thrift"
 include "yinsh.thrift"
 include "othello.thrift"
 include "fugitive.thrift"
+include "warchest.thrift"
 
 struct MatchReadyPayload {
   1: required bool ready,
@@ -44,6 +45,7 @@ union ClientCommandPayload {
   5: yinsh.YinshCommandPayload yinsh,
   6: othello.OthelloCommandPayload othello,
   7: fugitive.FugitiveCommandPayload fugitive,
+  8: warchest.WarChestCommandPayload warchest,
 }
 
 struct ClientCommand {
@@ -52,6 +54,10 @@ struct ClientCommand {
   3: required string matchID,
   4: required types.CommandType type,
   5: required ClientCommandPayload payload,
+}
+
+union MatchSetupView {
+  1: warchest.WarChestMatchSetup warchest,
 }
 
 struct MatchSync {
@@ -67,6 +73,7 @@ struct MatchSync {
   10: required i32 maxPlayers,
   11: required map<string, room.RoomPlayer> players,
   12: required list<string> playerOrder,
+  13: optional MatchSetupView setup,
 }
 
 union RoomView {
@@ -76,6 +83,7 @@ union RoomView {
   4: yinsh.YinshRoomView yinsh,
   5: othello.OthelloRoomView othello,
   6: fugitive.FugitiveRoomView fugitive,
+  7: warchest.WarChestRoomView warchest,
 }
 
 struct RoomSync {

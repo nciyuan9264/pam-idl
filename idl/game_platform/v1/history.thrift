@@ -6,6 +6,7 @@ include "acquire.thrift"
 include "splendor.thrift"
 include "yinsh.thrift"
 include "othello.thrift"
+include "warchest.thrift"
 
 struct HistoryGamePlayer {
   1: required i64 id (api.js_conv = "true"),
@@ -81,12 +82,18 @@ struct FugitiveLeaderboardMetric {
   2: required double winRate,
 }
 
+struct WarChestLeaderboardMetric {
+  1: required i32 wins,
+  2: required double winRate,
+}
+
 union LeaderboardMetric {
   1: DavinciLeaderboardMetric davinci,
   2: RankLeaderboardMetric rank,
   3: YinshLeaderboardMetric yinsh,
   4: OthelloLeaderboardMetric othello,
   5: FugitiveLeaderboardMetric fugitive,
+  6: WarChestLeaderboardMetric warchest,
 }
 
 struct LeaderboardEntry {
@@ -102,6 +109,7 @@ union ReplaySnapshot {
   2: splendor.SplendorReplaySnapshot splendor,
   3: yinsh.YinshReplaySnapshot yinsh,
   4: othello.OthelloReplaySnapshot othello,
+  5: warchest.WarChestReplaySnapshot warchest,
 }
 
 struct ListHistoryGamesReq {
