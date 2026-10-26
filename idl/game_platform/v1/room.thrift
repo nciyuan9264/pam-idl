@@ -58,6 +58,10 @@ struct WarChestRoomMetrics {
   3: required i32 progressTotal,
 }
 
+struct QuoridorRoomMetrics {
+  1: required i32 turnCount,
+}
+
 union RoomMetrics {
   1: AcquireRoomMetrics acquire,
   2: DavinciRoomMetrics davinci,
@@ -66,6 +70,7 @@ union RoomMetrics {
   5: OthelloRoomMetrics othello,
   6: FugitiveRoomMetrics fugitive,
   7: WarChestRoomMetrics warchest,
+  8: QuoridorRoomMetrics quoridor,
 }
 
 struct RoomInfo {
