@@ -157,6 +157,7 @@ struct GetUserReq {
 struct PublicUserProfile {
   1: required string user_id,
   2: required string display_name,
+  3: optional string avatar,
 }
 
 struct BatchGetPublicProfilesReq {
