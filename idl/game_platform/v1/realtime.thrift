@@ -14,6 +14,7 @@ include "quoridor.thrift"
 include "loveletter.thrift"
 include "sixnimmt.thrift"
 include "hex.thrift"
+include "forsale.thrift"
 
 struct MatchReadyPayload {
   1: required bool ready,
@@ -54,6 +55,7 @@ union ClientCommandPayload {
   10: loveletter.LoveLetterCommandPayload loveletter,
   11: sixnimmt.SixNimmtCommandPayload sixnimmt,
   12: hex.HexCommandPayload hex,
+  13: forsale.ForSaleCommandPayload forSale,
 }
 
 struct ClientCommand {
@@ -96,6 +98,7 @@ union RoomView {
   9: loveletter.LoveLetterRoomView loveletter,
   10: sixnimmt.SixNimmtRoomView sixnimmt,
   11: hex.HexRoomView hex,
+  12: forsale.ForSaleRoomView forSale,
 }
 
 struct RoomSync {
