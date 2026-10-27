@@ -9,6 +9,7 @@ include "othello.thrift"
 include "warchest.thrift"
 include "quoridor.thrift"
 include "loveletter.thrift"
+include "sixnimmt.thrift"
 include "onitama.thrift"
 
 struct HistoryGamePlayer {
@@ -127,7 +128,8 @@ union ReplaySnapshot {
   5: warchest.WarChestReplaySnapshot warchest,
   6: quoridor.QuoridorReplaySnapshot quoridor,
   7: loveletter.LoveLetterReplaySnapshot loveletter,
-  8: onitama.OnitamaReplaySnapshot onitama,
+  8: sixnimmt.SixNimmtReplaySnapshot sixnimmt,
+  9: onitama.OnitamaReplaySnapshot onitama,
 }
 
 struct ListHistoryGamesReq {

@@ -65,6 +65,7 @@ game_platform/v1/
 ├── warchest.thrift
 ├── quoridor.thrift
 ├── loveletter.thrift
+├── sixnimmt.thrift
 └── onitama.thrift
 ```
 
