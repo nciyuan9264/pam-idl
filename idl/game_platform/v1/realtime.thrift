@@ -12,6 +12,7 @@ include "fugitive.thrift"
 include "warchest.thrift"
 include "quoridor.thrift"
 include "loveletter.thrift"
+include "sixnimmt.thrift"
 
 struct MatchReadyPayload {
   1: required bool ready,
@@ -50,6 +51,7 @@ union ClientCommandPayload {
   8: warchest.WarChestCommandPayload warchest,
   9: quoridor.QuoridorCommandPayload quoridor,
   10: loveletter.LoveLetterCommandPayload loveletter,
+  11: sixnimmt.SixNimmtCommandPayload sixnimmt,
 }
 
 struct ClientCommand {
@@ -90,6 +92,7 @@ union RoomView {
   7: warchest.WarChestRoomView warchest,
   8: quoridor.QuoridorRoomView quoridor,
   9: loveletter.LoveLetterRoomView loveletter,
+  10: sixnimmt.SixNimmtRoomView sixnimmt,
 }
 
 struct RoomSync {

@@ -70,6 +70,13 @@ struct LoveLetterRoomMetrics {
   5: required i32 progressTotal,
 }
 
+struct SixNimmtRoomMetrics {
+  1: required i32 maxPenalty,
+  2: required i32 targetPenalty,
+  3: required i32 progressCurrent,
+  4: required i32 progressTotal,
+}
+
 union RoomMetrics {
   1: AcquireRoomMetrics acquire,
   2: DavinciRoomMetrics davinci,
@@ -80,6 +87,7 @@ union RoomMetrics {
   7: WarChestRoomMetrics warchest,
   8: QuoridorRoomMetrics quoridor,
   9: LoveLetterRoomMetrics loveletter,
+  10: SixNimmtRoomMetrics sixnimmt,
 }
 
 struct RoomInfo {
