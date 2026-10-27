@@ -11,6 +11,7 @@ include "quoridor.thrift"
 include "loveletter.thrift"
 include "sixnimmt.thrift"
 include "hex.thrift"
+include "forsale.thrift"
 
 struct HistoryGamePlayer {
   1: required i64 id (api.js_conv = "true"),
@@ -130,6 +131,7 @@ union ReplaySnapshot {
   7: loveletter.LoveLetterReplaySnapshot loveletter,
   8: sixnimmt.SixNimmtReplaySnapshot sixnimmt,
   9: hex.HexReplaySnapshot hex,
+  10: forsale.ForSaleReplaySnapshot forSale,
 }
 
 struct ListHistoryGamesReq {
