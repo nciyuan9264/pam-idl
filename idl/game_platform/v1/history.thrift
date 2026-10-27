@@ -8,6 +8,7 @@ include "yinsh.thrift"
 include "othello.thrift"
 include "warchest.thrift"
 include "quoridor.thrift"
+include "loveletter.thrift"
 
 struct HistoryGamePlayer {
   1: required i64 id (api.js_conv = "true"),
@@ -118,6 +119,7 @@ union ReplaySnapshot {
   4: othello.OthelloReplaySnapshot othello,
   5: warchest.WarChestReplaySnapshot warchest,
   6: quoridor.QuoridorReplaySnapshot quoridor,
+  7: loveletter.LoveLetterReplaySnapshot loveletter,
 }
 
 struct ListHistoryGamesReq {

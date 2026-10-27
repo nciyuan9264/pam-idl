@@ -11,6 +11,7 @@ include "othello.thrift"
 include "fugitive.thrift"
 include "warchest.thrift"
 include "quoridor.thrift"
+include "loveletter.thrift"
 
 struct MatchReadyPayload {
   1: required bool ready,
@@ -48,6 +49,7 @@ union ClientCommandPayload {
   7: fugitive.FugitiveCommandPayload fugitive,
   8: warchest.WarChestCommandPayload warchest,
   9: quoridor.QuoridorCommandPayload quoridor,
+  10: loveletter.LoveLetterCommandPayload loveletter,
 }
 
 struct ClientCommand {
@@ -87,6 +89,7 @@ union RoomView {
   6: fugitive.FugitiveRoomView fugitive,
   7: warchest.WarChestRoomView warchest,
   8: quoridor.QuoridorRoomView quoridor,
+  9: loveletter.LoveLetterRoomView loveletter,
 }
 
 struct RoomSync {

@@ -62,6 +62,14 @@ struct QuoridorRoomMetrics {
   1: required i32 turnCount,
 }
 
+struct LoveLetterRoomMetrics {
+  1: required i32 currentRound,
+  2: required i32 maxFavor,
+  3: required i32 targetFavor,
+  4: required i32 progressCurrent,
+  5: required i32 progressTotal,
+}
+
 union RoomMetrics {
   1: AcquireRoomMetrics acquire,
   2: DavinciRoomMetrics davinci,
@@ -71,6 +79,7 @@ union RoomMetrics {
   6: FugitiveRoomMetrics fugitive,
   7: WarChestRoomMetrics warchest,
   8: QuoridorRoomMetrics quoridor,
+  9: LoveLetterRoomMetrics loveletter,
 }
 
 struct RoomInfo {
