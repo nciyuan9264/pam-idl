@@ -17,6 +17,7 @@ include "hex.thrift"
 include "forsale.thrift"
 include "hive.thrift"
 include "onitama.thrift"
+include "cantstop.thrift"
 
 struct MatchReadyPayload {
   1: required bool ready,
@@ -60,6 +61,7 @@ union ClientCommandPayload {
   13: forsale.ForSaleCommandPayload forSale,
   14: hive.HiveCommandPayload hive,
   15: onitama.OnitamaCommandPayload onitama,
+  16: cantstop.CantStopCommandPayload cantstop,
 }
 
 struct ClientCommand {
@@ -105,6 +107,7 @@ union RoomView {
   12: forsale.ForSaleRoomView forSale,
   13: hive.HiveRoomView hive,
   14: onitama.OnitamaRoomView onitama,
+  15: cantstop.CantStopRoomView cantstop,
 }
 
 struct RoomSync {

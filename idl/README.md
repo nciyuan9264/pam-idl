@@ -69,7 +69,8 @@ game_platform/v1/
 ├── hex.thrift
 ├── forsale.thrift
 ├── hive.thrift
-└── onitama.thrift
+├── onitama.thrift
+└── cantstop.thrift
 ```
 
 `GamePlatformService` owns player-facing room, history, replay, statistics and

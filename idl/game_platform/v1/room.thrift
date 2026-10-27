@@ -97,6 +97,13 @@ struct OnitamaRoomMetrics {
   1: required i32 turnCount,
 }
 
+struct CantStopRoomMetrics {
+  1: required i32 maxClaimedColumns,
+  2: required i32 targetColumns,
+  3: required i32 progressCurrent,
+  4: required i32 progressTotal,
+}
+
 union RoomMetrics {
   1: AcquireRoomMetrics acquire,
   2: DavinciRoomMetrics davinci,
@@ -112,6 +119,7 @@ union RoomMetrics {
   12: ForSaleRoomMetrics forSale,
   13: HiveRoomMetrics hive,
   14: OnitamaRoomMetrics onitama,
+  15: CantStopRoomMetrics cantstop,
 }
 
 struct RoomInfo {

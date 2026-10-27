@@ -14,6 +14,7 @@ include "hex.thrift"
 include "forsale.thrift"
 include "hive.thrift"
 include "onitama.thrift"
+include "cantstop.thrift"
 
 struct HistoryGamePlayer {
   1: required i64 id (api.js_conv = "true"),
@@ -114,6 +115,11 @@ struct OnitamaLeaderboardMetric {
   2: required double winRate,
 }
 
+struct CantStopLeaderboardMetric {
+  1: required i32 wins,
+  2: required double winRate,
+}
+
 union LeaderboardMetric {
   1: DavinciLeaderboardMetric davinci,
   2: RankLeaderboardMetric rank,
@@ -125,6 +131,7 @@ union LeaderboardMetric {
   8: HexLeaderboardMetric hex,
   9: HiveLeaderboardMetric hive,
   10: OnitamaLeaderboardMetric onitama,
+  11: CantStopLeaderboardMetric cantstop,
 }
 
 struct LeaderboardEntry {
@@ -148,6 +155,7 @@ union ReplaySnapshot {
   10: forsale.ForSaleReplaySnapshot forSale,
   11: hive.HiveReplaySnapshot hive,
   12: onitama.OnitamaReplaySnapshot onitama,
+  13: cantstop.CantStopReplaySnapshot cantstop,
 }
 
 struct ListHistoryGamesReq {
