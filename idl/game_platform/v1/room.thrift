@@ -77,6 +77,22 @@ struct SixNimmtRoomMetrics {
   4: required i32 progressTotal,
 }
 
+struct HiveRoomMetrics {
+  1: required i32 turnCount,
+  2: required i32 placedPieceCount,
+  3: required i32 progressCurrent,
+  4: required i32 progressTotal,
+}
+
+struct HexRoomMetrics {
+  1: required i32 turnCount,
+}
+
+struct ForSaleRoomMetrics {
+  1: required i32 progressCurrent,
+  2: required i32 progressTotal,
+}
+
 struct OnitamaRoomMetrics {
   1: required i32 turnCount,
 }
@@ -92,7 +108,10 @@ union RoomMetrics {
   8: QuoridorRoomMetrics quoridor,
   9: LoveLetterRoomMetrics loveletter,
   10: SixNimmtRoomMetrics sixnimmt,
-  11: OnitamaRoomMetrics onitama,
+  11: HexRoomMetrics hex,
+  12: ForSaleRoomMetrics forSale,
+  13: HiveRoomMetrics hive,
+  14: OnitamaRoomMetrics onitama,
 }
 
 struct RoomInfo {

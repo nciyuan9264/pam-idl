@@ -13,6 +13,9 @@ include "warchest.thrift"
 include "quoridor.thrift"
 include "loveletter.thrift"
 include "sixnimmt.thrift"
+include "hex.thrift"
+include "forsale.thrift"
+include "hive.thrift"
 include "onitama.thrift"
 
 struct MatchReadyPayload {
@@ -53,7 +56,10 @@ union ClientCommandPayload {
   9: quoridor.QuoridorCommandPayload quoridor,
   10: loveletter.LoveLetterCommandPayload loveletter,
   11: sixnimmt.SixNimmtCommandPayload sixnimmt,
-  12: onitama.OnitamaCommandPayload onitama,
+  12: hex.HexCommandPayload hex,
+  13: forsale.ForSaleCommandPayload forSale,
+  14: hive.HiveCommandPayload hive,
+  15: onitama.OnitamaCommandPayload onitama,
 }
 
 struct ClientCommand {
@@ -95,7 +101,10 @@ union RoomView {
   8: quoridor.QuoridorRoomView quoridor,
   9: loveletter.LoveLetterRoomView loveletter,
   10: sixnimmt.SixNimmtRoomView sixnimmt,
-  11: onitama.OnitamaRoomView onitama,
+  11: hex.HexRoomView hex,
+  12: forsale.ForSaleRoomView forSale,
+  13: hive.HiveRoomView hive,
+  14: onitama.OnitamaRoomView onitama,
 }
 
 struct RoomSync {

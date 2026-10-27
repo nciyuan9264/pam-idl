@@ -10,6 +10,9 @@ include "warchest.thrift"
 include "quoridor.thrift"
 include "loveletter.thrift"
 include "sixnimmt.thrift"
+include "hex.thrift"
+include "forsale.thrift"
+include "hive.thrift"
 include "onitama.thrift"
 
 struct HistoryGamePlayer {
@@ -96,6 +99,16 @@ struct QuoridorLeaderboardMetric {
   2: required double winRate,
 }
 
+struct HexLeaderboardMetric {
+  1: required i32 wins,
+  2: required double winRate,
+}
+
+struct HiveLeaderboardMetric {
+  1: required i32 wins,
+  2: required double winRate,
+}
+
 struct OnitamaLeaderboardMetric {
   1: required i32 wins,
   2: required double winRate,
@@ -109,7 +122,9 @@ union LeaderboardMetric {
   5: FugitiveLeaderboardMetric fugitive,
   6: WarChestLeaderboardMetric warchest,
   7: QuoridorLeaderboardMetric quoridor,
-  8: OnitamaLeaderboardMetric onitama,
+  8: HexLeaderboardMetric hex,
+  9: HiveLeaderboardMetric hive,
+  10: OnitamaLeaderboardMetric onitama,
 }
 
 struct LeaderboardEntry {
@@ -129,7 +144,10 @@ union ReplaySnapshot {
   6: quoridor.QuoridorReplaySnapshot quoridor,
   7: loveletter.LoveLetterReplaySnapshot loveletter,
   8: sixnimmt.SixNimmtReplaySnapshot sixnimmt,
-  9: onitama.OnitamaReplaySnapshot onitama,
+  9: hex.HexReplaySnapshot hex,
+  10: forsale.ForSaleReplaySnapshot forSale,
+  11: hive.HiveReplaySnapshot hive,
+  12: onitama.OnitamaReplaySnapshot onitama,
 }
 
 struct ListHistoryGamesReq {

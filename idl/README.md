@@ -66,6 +66,9 @@ game_platform/v1/
 ├── quoridor.thrift
 ├── loveletter.thrift
 ├── sixnimmt.thrift
+├── hex.thrift
+├── forsale.thrift
+├── hive.thrift
 └── onitama.thrift
 ```
 
