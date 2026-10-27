@@ -67,7 +67,8 @@ game_platform/v1/
 ├── loveletter.thrift
 ├── sixnimmt.thrift
 ├── hex.thrift
-└── forsale.thrift
+├── forsale.thrift
+└── hive.thrift
 ```
 
 `GamePlatformService` owns player-facing room, history, replay, statistics and

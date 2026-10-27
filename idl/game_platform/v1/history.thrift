@@ -12,6 +12,7 @@ include "loveletter.thrift"
 include "sixnimmt.thrift"
 include "hex.thrift"
 include "forsale.thrift"
+include "hive.thrift"
 
 struct HistoryGamePlayer {
   1: required i64 id (api.js_conv = "true"),
@@ -102,6 +103,11 @@ struct HexLeaderboardMetric {
   2: required double winRate,
 }
 
+struct HiveLeaderboardMetric {
+  1: required i32 wins,
+  2: required double winRate,
+}
+
 union LeaderboardMetric {
   1: DavinciLeaderboardMetric davinci,
   2: RankLeaderboardMetric rank,
@@ -111,6 +117,7 @@ union LeaderboardMetric {
   6: WarChestLeaderboardMetric warchest,
   7: QuoridorLeaderboardMetric quoridor,
   8: HexLeaderboardMetric hex,
+  9: HiveLeaderboardMetric hive,
 }
 
 struct LeaderboardEntry {
@@ -132,6 +139,7 @@ union ReplaySnapshot {
   8: sixnimmt.SixNimmtReplaySnapshot sixnimmt,
   9: hex.HexReplaySnapshot hex,
   10: forsale.ForSaleReplaySnapshot forSale,
+  11: hive.HiveReplaySnapshot hive,
 }
 
 struct ListHistoryGamesReq {
