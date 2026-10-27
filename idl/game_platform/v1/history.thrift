@@ -10,6 +10,7 @@ include "warchest.thrift"
 include "quoridor.thrift"
 include "loveletter.thrift"
 include "sixnimmt.thrift"
+include "hex.thrift"
 
 struct HistoryGamePlayer {
   1: required i64 id (api.js_conv = "true"),
@@ -95,6 +96,11 @@ struct QuoridorLeaderboardMetric {
   2: required double winRate,
 }
 
+struct HexLeaderboardMetric {
+  1: required i32 wins,
+  2: required double winRate,
+}
+
 union LeaderboardMetric {
   1: DavinciLeaderboardMetric davinci,
   2: RankLeaderboardMetric rank,
@@ -103,6 +109,7 @@ union LeaderboardMetric {
   5: FugitiveLeaderboardMetric fugitive,
   6: WarChestLeaderboardMetric warchest,
   7: QuoridorLeaderboardMetric quoridor,
+  8: HexLeaderboardMetric hex,
 }
 
 struct LeaderboardEntry {
@@ -122,6 +129,7 @@ union ReplaySnapshot {
   6: quoridor.QuoridorReplaySnapshot quoridor,
   7: loveletter.LoveLetterReplaySnapshot loveletter,
   8: sixnimmt.SixNimmtReplaySnapshot sixnimmt,
+  9: hex.HexReplaySnapshot hex,
 }
 
 struct ListHistoryGamesReq {

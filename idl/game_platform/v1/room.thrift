@@ -77,6 +77,10 @@ struct SixNimmtRoomMetrics {
   4: required i32 progressTotal,
 }
 
+struct HexRoomMetrics {
+  1: required i32 turnCount,
+}
+
 union RoomMetrics {
   1: AcquireRoomMetrics acquire,
   2: DavinciRoomMetrics davinci,
@@ -88,6 +92,7 @@ union RoomMetrics {
   8: QuoridorRoomMetrics quoridor,
   9: LoveLetterRoomMetrics loveletter,
   10: SixNimmtRoomMetrics sixnimmt,
+  11: HexRoomMetrics hex,
 }
 
 struct RoomInfo {

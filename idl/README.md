@@ -65,7 +65,8 @@ game_platform/v1/
 ├── warchest.thrift
 ├── quoridor.thrift
 ├── loveletter.thrift
-└── sixnimmt.thrift
+├── sixnimmt.thrift
+└── hex.thrift
 ```
 
 `GamePlatformService` owns player-facing room, history, replay, statistics and
