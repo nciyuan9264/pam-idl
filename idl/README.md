@@ -64,7 +64,8 @@ game_platform/v1/
 ├── fugitive.thrift
 ├── warchest.thrift
 ├── quoridor.thrift
-└── loveletter.thrift
+├── loveletter.thrift
+└── onitama.thrift
 ```
 
 `GamePlatformService` owns player-facing room, history, replay, statistics and

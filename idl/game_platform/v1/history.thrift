@@ -9,6 +9,7 @@ include "othello.thrift"
 include "warchest.thrift"
 include "quoridor.thrift"
 include "loveletter.thrift"
+include "onitama.thrift"
 
 struct HistoryGamePlayer {
   1: required i64 id (api.js_conv = "true"),
@@ -94,6 +95,11 @@ struct QuoridorLeaderboardMetric {
   2: required double winRate,
 }
 
+struct OnitamaLeaderboardMetric {
+  1: required i32 wins,
+  2: required double winRate,
+}
+
 union LeaderboardMetric {
   1: DavinciLeaderboardMetric davinci,
   2: RankLeaderboardMetric rank,
@@ -102,6 +108,7 @@ union LeaderboardMetric {
   5: FugitiveLeaderboardMetric fugitive,
   6: WarChestLeaderboardMetric warchest,
   7: QuoridorLeaderboardMetric quoridor,
+  8: OnitamaLeaderboardMetric onitama,
 }
 
 struct LeaderboardEntry {
@@ -120,6 +127,7 @@ union ReplaySnapshot {
   5: warchest.WarChestReplaySnapshot warchest,
   6: quoridor.QuoridorReplaySnapshot quoridor,
   7: loveletter.LoveLetterReplaySnapshot loveletter,
+  8: onitama.OnitamaReplaySnapshot onitama,
 }
 
 struct ListHistoryGamesReq {

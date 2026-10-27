@@ -70,6 +70,10 @@ struct LoveLetterRoomMetrics {
   5: required i32 progressTotal,
 }
 
+struct OnitamaRoomMetrics {
+  1: required i32 turnCount,
+}
+
 union RoomMetrics {
   1: AcquireRoomMetrics acquire,
   2: DavinciRoomMetrics davinci,
@@ -80,6 +84,7 @@ union RoomMetrics {
   7: WarChestRoomMetrics warchest,
   8: QuoridorRoomMetrics quoridor,
   9: LoveLetterRoomMetrics loveletter,
+  10: OnitamaRoomMetrics onitama,
 }
 
 struct RoomInfo {
