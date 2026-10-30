@@ -47,7 +47,7 @@ struct HistoryGame {
   11: required types.ISODateTime createdAt,
   12: required types.ISODateTime updatedAt,
   13: optional list<HistoryGamePlayer> players,
-  14: optional string roomDisplayName,
+  // Field 14 was roomDisplayName. Keep this field ID unused.
 }
 
 struct HistoryEventMeta {

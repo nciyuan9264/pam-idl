@@ -138,7 +138,7 @@ struct RoomInfo {
   13: required types.ISODateTime updatedAt,
   14: required list<RoomPlayer> players,
   15: required RoomMetrics metrics,
-  16: optional string displayName,
+  // Field 16 was room displayName. Keep this field ID unused.
   17: optional i32 turnTimeoutSeconds,
 }
 
@@ -147,7 +147,7 @@ struct CreateRoomReq {
   2: optional types.Visibility visibility (api.body = "visibility"),
   3: optional i32 max_players (api.body = "maxPlayers"),
   4: required string request_id (api.body = "requestID"),
-  5: optional string display_name (api.body = "displayName"),
+  // Field 5 was display_name. Keep this field ID unused.
   6: optional i32 turn_timeout_seconds (api.body = "turnTimeoutSeconds"),
 }
 
