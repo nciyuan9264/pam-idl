@@ -66,6 +66,8 @@ struct ForSaleRoomData {
   15: optional i64 transitionTimeoutMs,
   16: required map<string, room.RoomPlayer> players,
   17: required list<string> playerOrder,
+  18: optional string turnDeadline,
+  19: optional i64 turnTimeoutMs,
 }
 
 struct ForSalePlayerResult {
