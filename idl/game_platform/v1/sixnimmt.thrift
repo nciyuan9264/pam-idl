@@ -106,6 +106,7 @@ struct SixNimmtRoomData {
   12: optional string roundTransitionDeadline,
   13: required map<string, room.RoomPlayer> players,
   14: required list<string> playerOrder,
+  15: optional string revealDeadline,
 }
 
 struct SixNimmtRoomView {
