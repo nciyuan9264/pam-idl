@@ -66,6 +66,8 @@ struct LoginShowcaseData {
   // Number of players created during the previous seven days.
   2: required i64 newly_joined_players,
   3: required list<LoginShowcasePlayer> recent_players,
+  // Number of completed games across the platform.
+  4: required i64 total_games,
 }
 
 struct LoginShowcaseResp {
