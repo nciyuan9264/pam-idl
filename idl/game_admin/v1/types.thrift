@@ -42,6 +42,7 @@ struct OverviewMetrics {
   16: required i64 average_game_duration_seconds,
   17: required i64 average_player_duration_seconds,
   18: required i64 games_abandoned,
+  19: required i64 total_games,
 }
 
 struct DailyOverview {
