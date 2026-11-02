@@ -8,6 +8,7 @@ struct UserIdentity {
   4: optional string display_name,
   5: optional string avatar,
   6: optional list<string> roles,
+  7: optional string avatar_id,
 }
 
 struct EmptyData {}
@@ -132,6 +133,7 @@ struct UpdateUserReq {
   2: optional string email (api.body = "email"),
   3: optional string name (api.body = "name"),
   4: optional string avatar (api.body = "avatar"),
+  5: optional string avatar_id (api.body = "avatar_id"),
 }
 
 struct UploadAvatarReq {
@@ -150,6 +152,26 @@ struct UploadAvatarResp {
   1: required i32 status_code,
   2: required string message,
   3: required UploadAvatarData data,
+}
+
+struct AvatarPreset {
+  1: required string id,
+  2: required string name,
+  3: required string avatar,
+  4: required string thumbnail,
+}
+
+struct ListAvatarPresetsReq {}
+
+struct ListAvatarPresetsData {
+  1: required string version,
+  2: required list<AvatarPreset> presets,
+}
+
+struct ListAvatarPresetsResp {
+  1: required i32 status_code,
+  2: required string message,
+  3: required ListAvatarPresetsData data,
 }
 
 struct GetUserReq {

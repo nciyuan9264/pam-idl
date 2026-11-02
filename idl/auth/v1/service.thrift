@@ -89,6 +89,13 @@ service AuthService {
     api.content_type = "multipart/form-data"
   )
 
+  types.ListAvatarPresetsResp ListAvatarPresets(1: required types.ListAvatarPresetsReq req) throws (1: types.AuthError err) (
+    api.get = "/platform/auth/avatar-presets",
+    api.operation_id = "listAvatarPresets",
+    api.summary = "获取预置头像目录",
+    api.auth_required = "false"
+  )
+
   types.ListPasskeysResp ListPasskeys(1: required types.ListPasskeysReq req) throws (1: types.AuthError err) (
     api.get = "/platform/auth/passkeys",
     api.operation_id = "listPasskeys",
