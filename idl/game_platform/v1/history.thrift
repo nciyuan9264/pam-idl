@@ -140,6 +140,7 @@ struct LeaderboardEntry {
   3: required i32 totalGames,
   4: required LeaderboardMetric metric,
   5: optional string displayName,
+  6: optional string avatar,
 }
 
 union ReplaySnapshot {
