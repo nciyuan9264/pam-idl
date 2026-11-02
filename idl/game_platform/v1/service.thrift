@@ -59,6 +59,13 @@ service GamePlatformService {
     api.auth_required = "true"
   )
 
+  history.ResultCardResp GetResultCard(1: required history.GetResultCardReq req) throws (1: types.GamePlatformError err) (
+    api.get = "/platform/history/matches/:match_id/result-card",
+    api.operation_id = "getResultCard",
+    api.summary = "查询当前用户可分享的终局结果卡片数据",
+    api.auth_required = "true"
+  )
+
   history.SnapshotResp GetSnapshot(1: required history.GetSnapshotReq req) throws (1: types.GamePlatformError err) (
     api.get = "/platform/history/games/:id/snapshot",
     api.operation_id = "getSnapshot",

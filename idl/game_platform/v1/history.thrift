@@ -169,6 +169,11 @@ struct GetHistoryDetailReq {
   2: required types.GameType game_type (api.query = "gameType"),
 }
 
+struct GetResultCardReq {
+  1: required string match_id (api.path = "match_id"),
+  2: required types.GameType game_type (api.query = "gameType"),
+}
+
 struct GetSnapshotReq {
   1: required i64 id (api.path = "id", api.js_conv = "true"),
   2: required types.GameType game_type (api.query = "gameType"),
@@ -215,6 +220,33 @@ struct HistoryDetailResp {
   1: required i32 status_code,
   2: required string message,
   3: required HistoryDetailData data,
+}
+
+struct ResultCardPlayer {
+  1: required string display_name,
+  2: required i32 seat_index,
+  3: required bool is_ai,
+  4: optional i32 final_score,
+  5: optional i32 final_money,
+  6: required i32 final_stocks,
+  7: optional i32 final_rank,
+  8: required bool is_winner,
+  9: optional string game_role,
+  10: required bool is_self,
+}
+
+struct ResultCardData {
+  1: required types.GameType game_type,
+  2: required types.ISODateTime started_at,
+  3: required types.ISODateTime ended_at,
+  4: required i32 duration_seconds,
+  5: required list<ResultCardPlayer> players,
+}
+
+struct ResultCardResp {
+  1: required i32 status_code,
+  2: required string message,
+  3: required ResultCardData data,
 }
 
 struct SnapshotResp {
