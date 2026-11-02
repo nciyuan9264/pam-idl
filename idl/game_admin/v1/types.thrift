@@ -5,6 +5,11 @@ typedef string ISODate
 
 struct EmptyReq {}
 
+struct OverviewReq {
+  1: optional ISODate start_date (api.query = "start_date"),
+  2: optional ISODate end_date (api.query = "end_date"),
+}
+
 exception GameAdminError {
   1: required string code,
   2: required string message,
@@ -36,6 +41,7 @@ struct OverviewMetrics {
   15: required i64 player_duration_seconds,
   16: required i64 average_game_duration_seconds,
   17: required i64 average_player_duration_seconds,
+  18: required i64 games_abandoned,
 }
 
 struct DailyOverview {
@@ -46,6 +52,7 @@ struct DailyOverview {
   5: required i64 games_completed,
   6: required i64 game_duration_seconds,
   7: required i64 player_duration_seconds,
+  8: required i64 games_abandoned,
 }
 
 struct OverviewData {
@@ -135,6 +142,7 @@ struct GameActivitySummary {
   7: required i64 player_duration_seconds,
   8: required i64 average_game_duration_seconds,
   9: required double average_human_players,
+  10: required i64 games_abandoned,
 }
 
 struct GamesData {

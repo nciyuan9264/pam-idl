@@ -4,7 +4,7 @@ namespace js pam.game.admin.v1
 include "types.thrift"
 
 service GameAdminService {
-  types.OverviewResp GetOverview(1: required types.EmptyReq req) throws (1: types.GameAdminError err) (
+  types.OverviewResp GetOverview(1: required types.OverviewReq req) throws (1: types.GameAdminError err) (
     api.get = "/platform/admin/analytics/overview",
     api.operation_id = "getAdminAnalyticsOverview",
     api.summary = "查询平台数据总览",
