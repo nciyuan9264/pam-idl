@@ -71,6 +71,8 @@ struct ListUsersReq {
   1: optional i32 page (api.query = "page"),
   2: optional i32 page_size (api.query = "page_size"),
   3: optional string query (api.query = "query"),
+  4: optional string sort_by (api.query = "sort_by"),
+  5: optional string sort_order (api.query = "sort_order"),
 }
 
 struct AdminUserSummary {
@@ -163,6 +165,14 @@ struct LiveGameSummary {
   4: required i64 online_players,
 }
 
+struct LivePlayerSummary {
+  1: required string user_id,
+  2: required string display_name,
+  3: optional string avatar,
+  4: required bool online,
+  5: required bool is_owner,
+}
+
 struct LiveRoomSummary {
   1: required string room_id,
   2: required string match_id,
@@ -171,6 +181,7 @@ struct LiveRoomSummary {
   5: required i64 human_players,
   6: required i64 online_players,
   7: required i64 started_at_unix,
+  8: required list<LivePlayerSummary> players,
 }
 
 struct LiveData {
