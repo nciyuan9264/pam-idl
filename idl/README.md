@@ -80,6 +80,19 @@ generated clients must not default it internally. Realtime WebSocket traffic
 does not pass through PAM Gateway, but its v2 command and message types live in
 the same IDL so browser and server transports share one contract.
 
+The read-only game operations console is exposed as an independent service:
+
+```text
+game_admin/v1/
+├── service.thrift
+└── types.thrift
+```
+
+`GameAdminService` owns administrator-only analytics routes under
+`/platform/admin/analytics/*` and uses PSM `game.admin.rpc`. It remains
+separate from the player-facing game service so future platform management
+methods can evolve without expanding the public gameplay runtime.
+
 ## Versioning
 
 - Git commit SHA identifies every immutable contract snapshot.
