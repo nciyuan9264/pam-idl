@@ -36,6 +36,14 @@ service GameAdminService {
     api.auth_roles = "admin"
   )
 
+  types.MatchesResp ListMatches(1: required types.ListMatchesReq req) throws (1: types.GameAdminError err) (
+    api.get = "/platform/admin/analytics/matches",
+    api.operation_id = "listAdminAnalyticsMatches",
+    api.summary = "查询历史对局列表",
+    api.auth_required = "true",
+    api.auth_roles = "admin"
+  )
+
   types.LiveResp GetLive(1: required types.EmptyReq req) throws (1: types.GameAdminError err) (
     api.get = "/platform/admin/analytics/live",
     api.operation_id = "getAdminAnalyticsLive",

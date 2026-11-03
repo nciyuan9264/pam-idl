@@ -166,6 +166,50 @@ struct GamesResp {
   3: required GamesData data,
 }
 
+struct ListMatchesReq {
+  1: optional i32 page (api.query = "page"),
+  2: optional i32 page_size (api.query = "page_size"),
+  3: optional string query (api.query = "query"),
+  4: optional string game_type (api.query = "game_type"),
+  5: optional string end_reason (api.query = "end_reason"),
+}
+
+struct MatchPlayerSummary {
+  1: optional string user_id,
+  2: required string player_id,
+  3: required string display_name,
+  4: required i32 seat_index,
+  5: required bool is_ai,
+  6: optional i32 final_rank,
+  7: required bool is_winner,
+}
+
+struct MatchSummary {
+  1: required string game_id,
+  2: required string room_id,
+  3: optional string match_id,
+  4: required string game_type,
+  5: required i64 started_at_unix,
+  6: required i64 ended_at_unix,
+  7: required i64 duration_seconds,
+  8: required string end_reason,
+  9: required i32 max_players,
+  10: required list<MatchPlayerSummary> players,
+}
+
+struct MatchesData {
+  1: required list<MatchSummary> matches,
+  2: required i32 page,
+  3: required i32 page_size,
+  4: required i64 total,
+}
+
+struct MatchesResp {
+  1: required i32 status_code,
+  2: required string message,
+  3: required MatchesData data,
+}
+
 struct LiveGameSummary {
   1: required string game_type,
   2: required i64 active_rooms,
