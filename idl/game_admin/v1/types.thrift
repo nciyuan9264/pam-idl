@@ -8,6 +8,7 @@ struct EmptyReq {}
 struct OverviewReq {
   1: optional ISODate start_date (api.query = "start_date"),
   2: optional ISODate end_date (api.query = "end_date"),
+  3: optional bool all_time (api.query = "all_time"),
 }
 
 exception GameAdminError {
