@@ -28,7 +28,7 @@ service GameAdminService {
     api.auth_roles = "admin"
   )
 
-  types.GamesResp ListGames(1: required types.EmptyReq req) throws (1: types.GameAdminError err) (
+  types.GamesResp ListGames(1: required types.GamesReq req) throws (1: types.GameAdminError err) (
     api.get = "/platform/admin/analytics/games",
     api.operation_id = "listAdminAnalyticsGames",
     api.summary = "查询游戏活跃分析",

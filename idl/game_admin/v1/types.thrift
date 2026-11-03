@@ -135,6 +135,12 @@ struct UserActivityResp {
   3: required UserActivityData data,
 }
 
+struct GamesReq {
+  1: optional ISODate start_date (api.query = "start_date"),
+  2: optional ISODate end_date (api.query = "end_date"),
+  3: optional bool all_time (api.query = "all_time"),
+}
+
 struct GameActivitySummary {
   1: required string game_type,
   2: required i64 active_users,
