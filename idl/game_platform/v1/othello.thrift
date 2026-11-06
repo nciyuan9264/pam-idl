@@ -28,6 +28,19 @@ struct OthelloPlayerState {
   2: required i32 discCount,
 }
 
+struct OthelloPositionAnalysis {
+  1: required string requestID,
+  2: required string status,
+  3: optional double blackWinRate,
+  4: optional double drawRate,
+  5: optional double whiteWinRate,
+  6: optional i32 score,
+  7: optional i32 depth,
+  8: optional i64 elapsedMs,
+  9: required bool exact,
+  10: required string engineVersion,
+}
+
 struct OthelloRoomData {
   1: required list<OthelloDisc> board,
   2: required string currentPlayer,
@@ -43,6 +56,7 @@ struct OthelloRoomData {
   12: optional i64 turnTimeoutMs,
   13: required map<string, room.RoomPlayer> players,
   14: required list<string> playerOrder,
+  15: optional OthelloPositionAnalysis analysis,
 }
 
 struct OthelloResult {
