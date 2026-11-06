@@ -25,6 +25,7 @@ struct MatchReadyPayload {
 
 struct MatchSeatPayload {
   1: optional i32 seatIndex,
+  2: optional string aiDifficulty,
 }
 
 struct MatchRemovePlayerPayload {

@@ -68,6 +68,12 @@ struct OthelloResult {
   6: required string reason,
 }
 
+struct OthelloHintState {
+  1: required i32 remaining,
+  2: required bool pending,
+  3: optional i32 index,
+}
+
 struct OthelloRoomView {
   1: required string playerId,
   2: required string ownerID,
@@ -75,6 +81,7 @@ struct OthelloRoomView {
   4: required map<string, OthelloPlayerState> playerData,
   5: required OthelloRoomData roomData,
   6: optional OthelloResult result,
+  7: optional OthelloHintState hint,
 }
 
 struct OthelloReplaySnapshot {
@@ -94,4 +101,5 @@ union OthelloCommandPayload {
   1: OthelloPlaceDiscPayload placeDisc,
   2: types.EmptyPayload pass,
   3: types.EmptyPayload resign,
+  4: types.EmptyPayload requestHint,
 }

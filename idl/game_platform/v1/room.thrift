@@ -13,6 +13,7 @@ struct RoomPlayer {
   7: required bool ai,
   8: required bool ready,
   9: optional string gameRole,
+  10: optional string aiDifficulty,
 }
 
 struct AcquireRoomMetrics {
