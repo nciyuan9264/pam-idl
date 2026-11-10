@@ -81,6 +81,20 @@ service AuthService {
     api.auth_required = "true"
   )
 
+  types.AcquisitionSurveyResp GetAcquisitionSurvey(1: required types.GetAcquisitionSurveyReq req) throws (1: types.AuthError err) (
+    api.get = "/platform/auth/acquisition-survey",
+    api.operation_id = "getAcquisitionSurvey",
+    api.summary = "查询玩家来源问卷状态",
+    api.auth_required = "true"
+  )
+
+  types.AcquisitionSurveyResp SubmitAcquisitionSurvey(1: required types.SubmitAcquisitionSurveyReq req) throws (1: types.AuthError err) (
+    api.post = "/platform/auth/acquisition-survey",
+    api.operation_id = "submitAcquisitionSurvey",
+    api.summary = "提交玩家来源问卷",
+    api.auth_required = "true"
+  )
+
   types.UploadAvatarResp UploadAvatar(1: required types.UploadAvatarReq req) throws (1: types.AuthError err) (
     api.post = "/platform/auth/avatar/upload",
     api.operation_id = "uploadAvatar",

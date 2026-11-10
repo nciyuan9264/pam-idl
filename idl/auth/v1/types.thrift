@@ -136,6 +136,32 @@ struct UpdateUserReq {
   5: optional string avatar_id (api.body = "avatar_id"),
 }
 
+struct GetAcquisitionSurveyReq {}
+
+struct AcquisitionSourceOption {
+  1: required string value,
+  2: required string label,
+}
+
+struct AcquisitionSurveyData {
+  1: required bool completed,
+  2: optional string source,
+  3: optional i64 submitted_at_unix,
+  4: required list<AcquisitionSourceOption> options,
+  5: optional string other_detail,
+}
+
+struct AcquisitionSurveyResp {
+  1: required i32 status_code,
+  2: required string message,
+  3: required AcquisitionSurveyData data,
+}
+
+struct SubmitAcquisitionSurveyReq {
+  1: required string source (api.body = "source"),
+  2: optional string other_detail (api.body = "other_detail"),
+}
+
 struct UploadAvatarReq {
   1: required string access_token (api.none = "true"),
   2: required binary content (api.form = "avatar"),

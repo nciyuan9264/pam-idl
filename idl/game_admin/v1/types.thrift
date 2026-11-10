@@ -57,10 +57,17 @@ struct DailyOverview {
   8: required i64 games_abandoned,
 }
 
+struct AcquisitionSourceMetric {
+  1: required string source,
+  2: required string label,
+  3: required i64 users,
+}
+
 struct OverviewData {
   1: required AnalyticsWindow window,
   2: required OverviewMetrics metrics,
   3: required list<DailyOverview> daily,
+  4: required list<AcquisitionSourceMetric> acquisition_sources,
 }
 
 struct OverviewResp {
